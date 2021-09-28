@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <locale.h>
+#include <string>
 using namespace std;
 
 struct Pipe {
@@ -19,18 +20,10 @@ struct Stantia {
     int cehRab;
     int eff;
 };
-void coutPipe(Pipe& truba)
-{
-    cout << "Id: " << truba.id << endl << "Диаметр: " << truba.d << endl << "Длина: " << truba.l << endl << "В ремонте: " << truba.rem << endl;
-}
-void coutStantia(Stantia& stan)
-{
-    cout << "Id " << stan.id << endl << "Название: " << truba.name << endl << "Кол-во цехов " << truba.ceh << endl << "Цехов в работе: " << truba.cehRab << endl << "Эффективность: " << truba.eff << endl;
-}
 
 Pipe createPipe() {
     Pipe truba;
-    truba.id = 0;
+    truba.id = 1;
     truba.rem = false;
     cout << "Введите диаметр трубы:\n";
     cin >> truba.d;
@@ -41,7 +34,7 @@ Pipe createPipe() {
 
 Stantia createStantia() {
     Stantia stan;
-    stan.id = 0;
+    stan.id = 2;
     cout << "Введите название станции:\n";
     cin >> stan.name;
     stan.ceh = 30;
@@ -50,28 +43,72 @@ Stantia createStantia() {
     return stan;
 }
 
-
+void coutPipe(Pipe& truba)
+{
+    cout << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << endl << "Длина: " << truba.l << endl << "В ремонте: " << truba.rem << endl;
+}
+void coutStantia(Stantia& stan)
+{
+    cout << "Станция" << endl << "Id " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+}
 int main()
 {
     setlocale(LC_ALL, "Russian");
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
     int a;
+    bool trubaExist=false;
+    bool stanExist=false;    
+    Pipe truba;
+    Stantia stan;
     cin >> a;
-    if (a == 1) {
-        Pipe truba = createPipe();
-        coutPipe(truba);
+    while (a != 0) {
+    
+        if (a == 1) {
+            truba = createPipe();
+            coutPipe(truba);
+           trubaExist=true;
+        }
+        if (a == 2) {
+            stan = createStantia();
+            coutStantia(stan);
+            stanExist=true;
+        }
+        if ((a == 3)&&(trubaExist)) {
+            coutPipe(truba);
+        }
+        if ((a == 3) && (stanExist)) {
+            coutStantia(stan);
+        }
+        if ((a == 3) && (!trubaExist) && (!stanExist)) {
+            cout << "Ничего не создано"<<endl;
+        }
+        if ((a == 4) && (!trubaExist)) {
+            cout << "Труба не создана"<<endl;
+        }
+        if ((a == 4) && (trubaExist)) {
+            truba.rem = true;
+            coutPipe(truba);
+        }
+        if ((a == 5) && (!stanExist)) {
+            cout << "Станция не создана"<<endl;
+        }
+        if ((a == 5) && (stanExist)) {
+            stan.cehRab = 20;
+            stan.eff = 66;
+            coutStantia(stan);
+        }
+        cin >> a;
     }
-    if (a == 2) {
-        Stantia stan = createStantia();
-        coutStantia(stan);
-    }
-   // if (a == 4) {
-    //truba.rem = true;
-    //coutPipe(truba);
+    
+    //цехи по вводу
+    //в название водятся несколько слов
+    //если в название вводить цифры, тебя поправляют (и наоборот)
+    //переменную а убрать, сделать кейсы
+    //нецелые числа чтобы вводились
+    //если число 0, ритурн брейк, если другие, "нет такой команды"
+    //некорректный ввод чисел 
 }
    
-
-}
 
 
 
