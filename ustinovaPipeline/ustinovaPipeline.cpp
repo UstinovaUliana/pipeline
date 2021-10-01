@@ -1,5 +1,4 @@
-// ustinovaPipeline.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+
 
 #include <iostream>
 #include <locale.h>
@@ -8,8 +7,8 @@ using namespace std;
 
 struct Pipe {
     int id;
-    int d;
-    int l;
+    double d;
+    double l;
     bool rem;
 };
 
@@ -25,9 +24,9 @@ Pipe createPipe() {
     Pipe truba;
     truba.id = 1;
     truba.rem = false;
-    cout << "Введите диаметр трубы:\n";
+    cout << "Введите диаметр трубы, мм:";
     cin >> truba.d;
-    cout << "Введите длину трубы:\n";
+    cout << "Введите длину трубы, км:";
     cin >> truba.l;
     return truba;
 }
@@ -35,79 +34,115 @@ Pipe createPipe() {
 Stantia createStantia() {
     Stantia stan;
     stan.id = 2;
-    cout << "Введите название станции:\n";
+    cout << "Введите название станции (на английском):";
     cin >> stan.name;
-    stan.ceh = 30;
-    stan.cehRab = 30;
+    cout << "Введите количество цехов:";
+    cin >> stan.ceh;
+    stan.cehRab = stan.ceh;
     stan.eff = 100;
     return stan;
 }
 
 void coutPipe(Pipe& truba)
 {
-    cout << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << endl << "Длина: " << truba.l << endl << "В ремонте: " << truba.rem << endl;
+    cout << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
+    if (truba.rem) { cout << "да"; }
+    else { cout << "нет"; }
+    cout << endl;
 }
 void coutStantia(Stantia& stan)
 {
-    cout << "Станция" << endl << "Id " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+    cout << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
 }
 int main()
 {
     setlocale(LC_ALL, "Russian");
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
-    int a;
-    bool trubaExist=false;
-    bool stanExist=false;    
+    int com;
+    int oldCehRab;
+    bool trubaExist = false;
+    bool stanExist = false;
     Pipe truba;
     Stantia stan;
-    cin >> a;
-    while (a != 0) {
+    cout << "Команда: ";
+    cin >> com;
     
-        if (a == 1) {
+    while (com != 0) {
+       
+        switch (com)
+        {
+        case 1: {
             truba = createPipe();
             coutPipe(truba);
-           trubaExist=true;
+            trubaExist = true;
+            break;
         }
-        if (a == 2) {
+        case 2: {
             stan = createStantia();
             coutStantia(stan);
-            stanExist=true;
+            stanExist = true;
+            break;
         }
-        if ((a == 3)&&(trubaExist)) {
-            coutPipe(truba);
+        case 3: {
+            if (trubaExist) {
+                coutPipe(truba);
+            }
+            else if (stanExist) {
+                coutStantia(stan);
+            }
+            else {
+                cout << "Ничего не создано" << endl;
+            }
+            break;
         }
-        if ((a == 3) && (stanExist)) {
-            coutStantia(stan);
+        case 4: {
+            if (!trubaExist) {
+                cout << "Труба не создана" << endl;
+            }
+            else {
+                truba.rem = true;
+                coutPipe(truba);
+            }
+            break;
         }
-        if ((a == 3) && (!trubaExist) && (!stanExist)) {
-            cout << "Ничего не создано"<<endl;
+        case 5: {
+            if (!stanExist) {
+                cout << "Станция не создана" << endl;
+            }
+            else {
+                oldCehRab = stan.cehRab;
+                stan.cehRab = stan.cehRab-1;
+                stan.eff = stan.cehRab*100/oldCehRab;
+                coutStantia(stan);
+            }
+            break;
         }
-        if ((a == 4) && (!trubaExist)) {
-            cout << "Труба не создана"<<endl;
+        case 0: {
+            return 0;
+            break;
         }
-        if ((a == 4) && (trubaExist)) {
-            truba.rem = true;
-            coutPipe(truba);
+        default: {
+            cout << "Нет такой команды.\n";
+            break;
         }
-        if ((a == 5) && (!stanExist)) {
-            cout << "Станция не создана"<<endl;
         }
-        if ((a == 5) && (stanExist)) {
-            stan.cehRab = 20;
-            stan.eff = 66;
-            coutStantia(stan);
+        cout << "Команда: ";
+        cin >> com;
+        if (!cin) {
+            cin.clear();
+            cin.ignore(100);
+            cout << "Вводите номер команды.";
         }
-        cin >> a;
     }
-    
-    //цехи по вводу
+}
+    //+цехи по вводу
     //в название водятся несколько слов
     //если в название вводить цифры, тебя поправляют (и наоборот)
-    //переменную а убрать, сделать кейсы
-    //нецелые числа чтобы вводились
-    //если число 0, ритурн брейк, если другие, "нет такой команды"
+    //+переменную а убрать, сделать кейсы
+    //+нецелые числа чтобы вводились
+    //+если число 0, ритурн брейк, если другие, "нет такой команды"
     //некорректный ввод чисел 
-}
+    //чтение из файла, ввод в файл
    
 
 
