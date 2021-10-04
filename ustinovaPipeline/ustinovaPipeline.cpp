@@ -28,13 +28,13 @@ Pipe createPipe() {
     do {
         cin.clear();
         cin.ignore(2000, '\n');
-        cout << "Введите диаметр трубы, мм:";
+        cout << "Введите диаметр трубы, мм (50-2000):";
         cin >> truba.d;
     } while (cin.fail() || truba.d < 50 || truba.d>2000);
      do {
          cin.clear();
          cin.ignore(2000, '\n');
-        cout << "Введите длину трубы, км:";
+        cout << "Введите длину трубы, км (0.05-100):";
         cin >> truba.l;
      } while (cin.fail() || truba.l < 0.05 || truba.l>100);
     
@@ -45,14 +45,15 @@ Stantia createStantia() {
     Stantia stan;
     stan.id = 2;
     do {
-        cout << "Введите название станции (на английском):";
-        cin >> stan.name;
+        cout << "Введите название станции (на английском) и дважды нажмите Enter:";
+        getline(cin>>ws, stan.name);
+  
     } while (cin.fail());
     
     do {
         cin.clear();
         cin.ignore(2000, '\n');
-        cout << "Введите количество цехов:";
+        cout << "Введите количество цехов (1-10):";
         cin >> stan.ceh;
     } while (cin.fail() || stan.ceh < 1 || stan.ceh>10);
     stan.cehRab = stan.ceh;
@@ -124,19 +125,45 @@ void saveStantia(Stantia& stan)
     }
     
 }
+void menu()
+{
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
+}
 
+void changePipe(Pipe& truba)
+{
+    truba.rem = true;
+    coutPipe(truba);
+
+}
+void changeStan(Stantia& stan)
+{
+    int oldCehRab;
+    oldCehRab = stan.cehRab;
+    if (stan.cehRab >= 1) {
+        stan.cehRab = stan.cehRab - 1;
+    }
+    else { stan.cehRab = stan.cehRab; };
+    stan.eff = stan.cehRab * 100 / oldCehRab;
+    coutStantia(stan);
+}
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
+    //cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
+    menu();
+    cout << "Чтобы начать, нажмите enter.";
     int com;
-    int oldCehRab;
     bool trubaExist = false;
     bool stanExist = false;
     Pipe truba;
     Stantia stan;
-    cout << "Команда: ";
-    cin >> com;
+    do {
+        cin.clear();
+        cin.ignore(2000, '\n');
+        cout << "Команда: ";
+        cin >> com;
+    } while (cin.fail());
     
     while (1) {
        
@@ -171,8 +198,7 @@ int main()
                 cout << "Труба не создана" << endl;
             }
             else {
-                truba.rem = true;
-                coutPipe(truba);
+                changePipe(truba);
             }
             break;
         }
@@ -181,13 +207,7 @@ int main()
                 cout << "Станция не создана" << endl;
             }
             else {
-                oldCehRab = stan.cehRab;
-                if (stan.cehRab >= 1) {
-                    stan.cehRab = stan.cehRab - 1;
-                }
-                else { stan.cehRab = stan.cehRab; };
-                stan.eff = stan.cehRab*100/oldCehRab;
-                coutStantia(stan);
+                changeStan(stan);
             }
             break;
         }
@@ -228,21 +248,25 @@ int main()
         }
         
         }
+        menu();
+        do {
+            cin.clear();
+            cin.ignore(2000, '\n');
+            cout << "Команда: ";
+            cin >> com;
+        } while (cin.fail());
         
-        cout << "Команда: ";
-        cin >> com;
     }
 }
     //+цехи по вводу
-    //в название водятся несколько слов
+    //+в название водятся несколько слов
     //+переменную а убрать, сделать кейсы
     //+нецелые числа чтобы вводились
     //+если число 0, ритурн брейк, если другие, "нет такой команды"
     //+некорректный ввод чисел 
     //+чтение из файла, ввод в файл
-    //проверка ввода имени
-    // меню и редактирование - операции
-// проверка ввода команды
+    //+меню и редактирование - операции
+    //+проверка ввода команды
    
 
 
