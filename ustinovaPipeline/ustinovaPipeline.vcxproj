@@ -141,6 +141,9 @@
   <ItemGroup>
     <ClCompile Include="ustinovaPipeline.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ustinovaPipeline.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

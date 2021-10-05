@@ -4,6 +4,7 @@
 #include <locale.h>
 #include <string>
 #include <fstream>
+#include "ustinovaPipeline.h"
 using namespace std;
 
 struct Pipe {
@@ -34,9 +35,9 @@ Pipe createPipe() {
      do {
          cin.clear();
          cin.ignore(2000, '\n');
-        cout << "Введите длину трубы, км (0.05-100):";
+        cout << "Введите длину трубы, км (0.05-10000):";
         cin >> truba.l;
-     } while (cin.fail() || truba.l < 0.05 || truba.l>100);
+     } while (cin.fail() || truba.l < 0.05 || truba.l>10000);
     
     return truba;
 }
@@ -56,37 +57,37 @@ Stantia createStantia() {
         cout << "Введите количество цехов (1-10):";
         cin >> stan.ceh;
     } while (cin.fail() || stan.ceh < 1 || stan.ceh>10);
-    stan.cehRab = stan.ceh;
-    stan.eff = 100;
+    stan.cehRab = 1;
+    stan.eff = 100*stan.cehRab/stan.ceh;
+    do {
+        cin.clear();
+        cin.ignore(2000, '\n');
+        cout << "Введите эффективность: ";
+        cin >> stan.eff;
+    } while (cin.fail());
     return stan;
 }
 
-Pipe loadPipe() {
-    Pipe truba;
-    ifstream fin;
-    fin.open("InTruba.txt", ios::in);
-    if (fin.is_open()) {
+Pipe loadPipe(ifstream& fin) {
+    Pipe truba = {};
+
         fin >> truba.id;
         fin >> truba.d;
         fin >> truba.l;
         fin >> truba.rem;
-        fin.close();
-    }
+
     return truba;
 }
 
-Stantia loadStantia() {
+Stantia loadStantia(ifstream& fin) {
     Stantia stan;
-    ifstream fin;
-    fin.open("InStantia.txt", ios::in);
-    if (fin.is_open()) {
-        fin >> stan.id;
-        fin >> stan.name;
-        fin >> stan.ceh;
-        fin >> stan.cehRab;
-        fin >> stan.eff;
-        fin.close();
-    }
+
+    fin >> stan.id;
+    getline(fin >> ws, stan.name);
+    fin >> stan.ceh;
+    fin >> stan.cehRab;
+    fin >> stan.eff;
+
     return stan;
 }
 
@@ -99,32 +100,31 @@ void coutPipe(Pipe& truba)
 }
 void coutStantia(Stantia& stan)
 {
-    cout << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+    cout << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
 }
 
-void savePipe(Pipe& truba)
+void saveAll(Pipe& truba, Stantia& stan)
 {
     ofstream fout;
-    fout.open("OutTruba.txt", ios::out);
+    fout.open("Out.txt", ios::out);
     if (fout.is_open()) {
-        fout << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
-        if (truba.rem) { fout << "да"; }
-        else { fout << "нет"; }
+        fout << truba.id << endl << truba.d << endl << truba.l << endl << truba.rem;
         fout << endl;
+        fout << stan.id << endl << stan.name << endl << stan.ceh << endl << stan.cehRab << endl << stan.eff << endl;
         fout.close();
     }
     
 }
-void saveStantia(Stantia& stan)
-{
-    ofstream fout;
-    fout.open("OutStantia.txt", ios::out);
-    if (fout.is_open()) {
-        fout << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
-        fout.close();
-    }
-    
-}
+//void saveStantia(Stantia& stan)
+//{
+//    ofstream fout;
+//    fout.open("Out.txt", ios::out);
+//    if (fout.is_open()) {
+//        fout << stan.id << endl  << stan.name << endl  << stan.ceh << endl  << stan.cehRab << endl  << stan.eff << endl;
+//        fout.close();
+//    }
+//    
+//}
 void menu()
 {
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
@@ -137,36 +137,41 @@ void changePipe(Pipe& truba)
 
 }
 void changeStan(Stantia& stan)
-{
-    int oldCehRab;
-    oldCehRab = stan.cehRab;
-    if (stan.cehRab >= 1) {
-        stan.cehRab = stan.cehRab - 1;
+{  
+    cout << "Введите кол-во рабочих цехов: ";
+    cin >> stan.cehRab;
+    while (stan.cehRab > stan.ceh || stan.cehRab < 0) {
+        cin.clear();
+        cin.ignore(2000, '\n');
+        cout << "Введите кол-во рабочих цехов: ";
+        cin >> stan.cehRab;
     }
-    else { stan.cehRab = stan.cehRab; };
-    stan.eff = stan.cehRab * 100 / oldCehRab;
     coutStantia(stan);
+}
+void command(int& com)
+{
+    cout << "Команда: ";
+    cin >> com;
+    while (cin.fail()) {
+        cin.clear();
+        cin.ignore(2000, '\n');
+        cout << "Команда: ";
+        cin >> com;
+    };
 }
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    //cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
-    menu();
-    cout << "Чтобы начать, нажмите enter.";
     int com;
     bool trubaExist = false;
     bool stanExist = false;
     Pipe truba;
     Stantia stan;
-    do {
-        cin.clear();
-        cin.ignore(2000, '\n');
-        cout << "Команда: ";
-        cin >> com;
-    } while (cin.fail());
-    
+
     while (1) {
-       
+        menu();
+        command(com);
+
         switch (com)
         {
         case 1: {
@@ -185,12 +190,12 @@ int main()
             if (trubaExist) {
                 coutPipe(truba);
             }
+            else cout << "Труба не создана" << endl;
              if (stanExist) {
                 coutStantia(stan);
             }
-            else {
-                cout << "Ничего не создано" << endl;
-            }
+            else  cout << "Станция не создана" << endl;
+    
             break;
         }
         case 4: {
@@ -217,25 +222,41 @@ int main()
         }
         
         case 6: {
-            if (trubaExist) {
-                savePipe(truba);
+            if (!stanExist) {
+                stan = {};
+            }
+            if (!trubaExist) {
+                truba = {};
+            }
+            saveAll(truba, stan);
+            /*if (trubaExist) {
+                saveAll(truba,stan);
             }
             if (stanExist) {
-                saveStantia(stan);
+                saveAll(stan);
             }
             else {
                 cout << "Ничего не создано" << endl;
-            }
-            cout << "Сохранено!";
+            }*/
+
+            cout << "Сохранено!" << endl;
             break;
         }
         case 7: {
-            truba = loadPipe();
-            coutPipe(truba);
-            trubaExist = true;
-            stan = loadStantia();
-            coutStantia(stan);
-            stanExist = true;
+
+            ifstream fin;
+            fin.open("Out.txt", ios::in);
+            if (!fin.is_open())
+            {
+                cout<<"Не открывается."<<endl;
+                break;
+            }
+            truba = loadPipe(fin);
+            stan = loadStantia(fin);
+            fin.close();
+
+            trubaExist = truba.id > 0;
+            stanExist = stan.id > 0;
             break;
         }
         /*if (cin.fail()) {
@@ -248,13 +269,7 @@ int main()
         }
         
         }
-        menu();
-        do {
-            cin.clear();
-            cin.ignore(2000, '\n');
-            cout << "Команда: ";
-            cin >> com;
-        } while (cin.fail());
+
         
     }
 }
