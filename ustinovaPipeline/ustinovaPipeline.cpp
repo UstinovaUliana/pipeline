@@ -12,7 +12,16 @@ struct Pipe {
     double d;
     double l;
     bool rem;
+    friend std::ostream& operator<< (std::ostream& out, const Pipe& pipe);
 };
+
+std::ostream& operator<< (std::ostream& out, const Pipe& truba)
+{
+    // Поскольку operator<< является другом класса Point, то мы имеем прямой доступ к членам Point
+    out << "PIPE: (" << truba.id << ", " << truba.l << ", " << truba.d << ")";
+
+    return out;
+}
 
 struct Stantia {
     int id;
@@ -106,7 +115,10 @@ void coutStantia(Stantia& stan)
 void saveAll(Pipe& truba, Stantia& stan)
 {
     ofstream fout;
-    fout.open("Out.txt", ios::out);
+    cout << "Введите название файла: ";
+    string ofileName;
+    cin >> ofileName;
+    fout.open(ofileName+".txt", ios::out);
     if (fout.is_open()) {
         fout << truba.id << endl << truba.d << endl << truba.l << endl << truba.rem;
         fout << endl;
@@ -245,7 +257,10 @@ int main()
         case 7: {
 
             ifstream fin;
-            fin.open("Out.txt", ios::in);
+            cout << "Введите название файла: ";
+            string ifileName;
+            cin >> ifileName;
+            fin.open(ifileName+".txt", ios::in);
             if (!fin.is_open())
             {
                 cout<<"Не открывается."<<endl;
@@ -264,7 +279,8 @@ int main()
             break;
         }*/
         default: {
-            cout << "Нет такой команды.\n";
+           // cout << "Нет такой команды.\n";
+            cout << truba;
             break;
         }
         
