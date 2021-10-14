@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include "ustinovaPipeline.h"
+#include <unordered_map>
 using namespace std;
 
 struct Pipe {
@@ -17,9 +18,11 @@ struct Pipe {
 
 std::ostream& operator<< (std::ostream& out, const Pipe& truba)
 {
-    // Поскольку operator<< является другом класса Point, то мы имеем прямой доступ к членам Point
-    out << "PIPE: (" << truba.id << ", " << truba.l << ", " << truba.d << ")";
-
+   
+    out << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
+    if (truba.rem) { out << "да"; }
+    else { out << "нет"; }
+    out << endl;
     return out;
 }
 
@@ -29,11 +32,22 @@ struct Stantia {
     int ceh;
     int cehRab;
     int eff;
+    friend std::ostream& operator<< (std::ostream& out, const Stantia& stan);
 };
+std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
+{
 
+    out << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+
+
+    return out;
+}
+
+int  tc = 0;
+int sc = 0;
 Pipe createPipe() {
     Pipe truba;
-    truba.id = 1;
+    truba.id = tc++;
     truba.rem = false;
     do {
         cin.clear();
@@ -53,7 +67,7 @@ Pipe createPipe() {
 
 Stantia createStantia() {
     Stantia stan;
-    stan.id = 2;
+    stan.id = sc++;
     do {
         cout << "Введите название станции (на английском) и дважды нажмите Enter:";
         getline(cin>>ws, stan.name);
@@ -127,16 +141,7 @@ void saveAll(Pipe& truba, Stantia& stan)
     }
     
 }
-//void saveStantia(Stantia& stan)
-//{
-//    ofstream fout;
-//    fout.open("Out.txt", ios::out);
-//    if (fout.is_open()) {
-//        fout << stan.id << endl  << stan.name << endl  << stan.ceh << endl  << stan.cehRab << endl  << stan.eff << endl;
-//        fout.close();
-//    }
-//    
-//}
+
 void menu()
 {
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
@@ -144,8 +149,8 @@ void menu()
 
 void changePipe(Pipe& truba)
 {
-    truba.rem = true;
-    coutPipe(truba);
+    truba.rem = !truba.rem;
+    cout << truba;
 
 }
 void changeStan(Stantia& stan)
@@ -171,14 +176,16 @@ void command(int& com)
         cin >> com;
     };
 }
+
 int main()
 {
+   
     setlocale(LC_ALL, "Russian");
     int com;
-    bool trubaExist = false;
-    bool stanExist = false;
     Pipe truba;
     Stantia stan;
+    unordered_map <int, Pipe> truby;
+    unordered_map <int, Stantia> stantii;
 
     while (1) {
         menu();
@@ -188,41 +195,43 @@ int main()
         {
         case 1: {
             truba = createPipe();
+            truby.insert({ tc, truba });
             coutPipe(truba);
-            trubaExist = true;
             break;
         }
         case 2: {
             stan = createStantia();
+            stantii.insert({ sc, stan });
             coutStantia(stan);
-            stanExist = true;
             break;
         }
         case 3: {
-            if (trubaExist) {
-                coutPipe(truba);
-            }
-            else cout << "Труба не создана" << endl;
-             if (stanExist) {
-                coutStantia(stan);
-            }
-            else  cout << "Станция не создана" << endl;
-    
+            if (truby.size()==0)
+                cout << "Трубы не созданы" << endl;
+            for (auto [id, p] : truby)
+                cout << p;
+             if (stantii.size()==0)
+                 cout << "Станции не созданы" << endl;
+             for (auto [id, s] : stantii)
+                 cout << s;
             break;
         }
         case 4: {
-            if (!trubaExist) {
-                cout << "Труба не создана" << endl;
-            }
+            if (truby.size() == 0)
+                cout << "Трубы не созданы" << endl;
             else {
-                changePipe(truba);
+                cout << "Введите id трубы: ";
+                //проверка
+                int id;
+                cin >> id;
+
+                changePipe(truby[id]);
             }
             break;
         }
         case 5: {
-            if (!stanExist) {
+            if (stantii.size() == 0)
                 cout << "Станция не создана" << endl;
-            }
             else {
                 changeStan(stan);
             }
@@ -234,12 +243,11 @@ int main()
         }
         
         case 6: {
-            if (!stanExist) {
+            if (stantii.size() == 0)
                 stan = {};
-            }
-            if (!trubaExist) {
+            if (truby.size()==0) 
                 truba = {};
-            }
+            
             saveAll(truba, stan);
             /*if (trubaExist) {
                 saveAll(truba,stan);
@@ -270,8 +278,6 @@ int main()
             stan = loadStantia(fin);
             fin.close();
 
-            trubaExist = truba.id > 0;
-            stanExist = stan.id > 0;
             break;
         }
         /*if (cin.fail()) {
@@ -279,8 +285,7 @@ int main()
             break;
         }*/
         default: {
-           // cout << "Нет такой команды.\n";
-            cout << truba;
+            cout << "Нет такой команды.\n";
             break;
         }
         
@@ -298,6 +303,10 @@ int main()
     //+чтение из файла, ввод в файл
     //+меню и редактирование - операции
     //+проверка ввода команды
+    // 
+//проверка ввода
+//сохранение и загрузка
+
    
 
 
