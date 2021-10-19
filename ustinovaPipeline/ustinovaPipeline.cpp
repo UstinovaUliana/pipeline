@@ -33,6 +33,7 @@ struct Stantia {
     int cehRab;
     int eff;
     friend std::ostream& operator<< (std::ostream& out, const Stantia& stan);
+    void NewFunction(Stantia& stan);
 };
 std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
 {
@@ -65,6 +66,19 @@ Pipe createPipe() {
     return truba;
 }
 
+
+int getInt()
+{
+    int input;
+    while (1) {
+        cin >> input;
+        if (!cin.fail())
+            return input;
+        cin.clear();
+        cin.ignore(2000, '\n');
+    }
+}
+
 Stantia createStantia() {
     Stantia stan;
     stan.id = sc++;
@@ -77,7 +91,7 @@ Stantia createStantia() {
     do {
         cin.clear();
         cin.ignore(2000, '\n');
-        cout << "Введите количество цехов (1-10):";
+        cout << "Введите кол-во цехов: ";
         cin >> stan.ceh;
     } while (cin.fail() || stan.ceh < 1 || stan.ceh>10);
     stan.cehRab = 1;
@@ -126,7 +140,7 @@ void coutStantia(Stantia& stan)
     cout << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
 }
 
-void saveAll(Pipe& truba, Stantia& stan)
+void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stantii)
 {
     ofstream fout;
     cout << "Введите название файла: ";
@@ -134,9 +148,14 @@ void saveAll(Pipe& truba, Stantia& stan)
     cin >> ofileName;
     fout.open(ofileName+".txt", ios::out);
     if (fout.is_open()) {
-        fout << truba.id << endl << truba.d << endl << truba.l << endl << truba.rem;
-        fout << endl;
-        fout << stan.id << endl << stan.name << endl << stan.ceh << endl << stan.cehRab << endl << stan.eff << endl;
+        for (int i = 0; i<=--tc; i++) {
+            fout << "Truba"<<endl << truby[i].id << endl << truby[i].d << endl << truby[i].l << endl << truby[i].rem << endl;
+        }
+        for (int i = 0; i <= --sc; i++) {
+            fout <<"Stantia" << endl << stantii[i].id << endl << stantii[i].name << endl << stantii[i].ceh << endl << stantii[i].cehRab << endl << stantii[i].eff << endl;
+            
+        }
+
         fout.close();
     }
     
@@ -195,13 +214,13 @@ int main()
         {
         case 1: {
             truba = createPipe();
-            truby.insert({ tc, truba });
+            truby.insert({ --tc, truba });
             coutPipe(truba);
             break;
         }
         case 2: {
             stan = createStantia();
-            stantii.insert({ sc, stan });
+            stantii.insert({ --sc, stan });
             coutStantia(stan);
             break;
         }
@@ -221,9 +240,8 @@ int main()
                 cout << "Трубы не созданы" << endl;
             else {
                 cout << "Введите id трубы: ";
-                //проверка
                 int id;
-                cin >> id;
+                id=getInt();
 
                 changePipe(truby[id]);
             }
@@ -231,9 +249,12 @@ int main()
         }
         case 5: {
             if (stantii.size() == 0)
-                cout << "Станция не создана" << endl;
+                cout << "Станция не создана." << endl;
             else {
-                changeStan(stan);
+                cout << "Введите id стации: ";
+                int id;
+                id = getInt();
+                changeStan(stantii[id]);
             }
             break;
         }
@@ -243,22 +264,12 @@ int main()
         }
         
         case 6: {
-            if (stantii.size() == 0)
+            /*if (stantii.size() == 0)
                 stan = {};
             if (truby.size()==0) 
-                truba = {};
+                truba = {};*/
             
-            saveAll(truba, stan);
-            /*if (trubaExist) {
-                saveAll(truba,stan);
-            }
-            if (stanExist) {
-                saveAll(stan);
-            }
-            else {
-                cout << "Ничего не создано" << endl;
-            }*/
-
+            saveAll(truby, stantii);
             cout << "Сохранено!" << endl;
             break;
         }
@@ -274,8 +285,22 @@ int main()
                 cout<<"Не открывается."<<endl;
                 break;
             }
-            truba = loadPipe(fin);
-            stan = loadStantia(fin);
+            string type;
+            while (!fin.eof()) {
+                tc = 0;
+                sc = 0;
+                getline(fin,type);
+                if (type == "Truba") {
+                 truby[tc] = loadPipe(fin);
+                    tc++;
+                }
+                if (type == "Stantia") {
+                    stantii[sc] = loadStantia(fin);
+                    sc++;
+                }
+                
+            }
+            
             fin.close();
 
             break;
@@ -304,8 +329,8 @@ int main()
     //+меню и редактирование - операции
     //+проверка ввода команды
     // 
-//проверка ввода
-//сохранение и загрузка
+//+-проверка ввода
+//+-сохранение и загрузка
 
    
 
