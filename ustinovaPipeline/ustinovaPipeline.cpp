@@ -33,7 +33,6 @@ struct Stantia {
     int cehRab;
     int eff;
     friend std::ostream& operator<< (std::ostream& out, const Stantia& stan);
-    void NewFunction(Stantia& stan);
 };
 std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
 {
@@ -163,7 +162,7 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
 
 void menu()
 {
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 0. Выход \n";
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n  8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов \n 0. Выход \n";
 }
 
 void changePipe(Pipe& truba)
@@ -195,6 +194,26 @@ void command(int& com)
         cin >> com;
     };
 }
+using filter = bool(*)(Pipe& truba,bool param);
+bool checkRem(Pipe& truba, bool param) {
+    return truba.rem == param;
+}
+bool chechCehRab(Stantia& stan, param) {
+    return ((stan.ceh - stan.cehRab)*100 / stan.ceh) >= param;
+}
+vector<int> findTrubyRem(const unordered_map <int, Pipe>& truby, filter rem, bool vremonte )
+{
+    vector <int> trubyRem;
+    int i = 0;
+    for (auto& truba : truby)
+    {
+        if (rem(truba, vremonte))
+            res.push_back(i);
+        i++;
+    }
+
+    return res;
+}
 
 int main()
 {
@@ -215,13 +234,13 @@ int main()
         case 1: {
             truba = createPipe();
             truby.insert({ --tc, truba });
-            coutPipe(truba);
+            cout<<truba<<endl;
             break;
         }
         case 2: {
             stan = createStantia();
             stantii.insert({ --sc, stan });
-            coutStantia(stan);
+            cout << stan << endl;
             break;
         }
         case 3: {
@@ -309,6 +328,15 @@ int main()
             cout << "Вводите цифру.\n";
             break;
         }*/
+        case 8: {
+            for (int i : FindStudentsByFilter(group, CheckByName, name))
+                cout << group[i];
+
+            for (int i : FindStudentsByFilter(group, CheckByScore, 4.0))
+                cout << group[i];
+
+            break;
+        }
         default: {
             cout << "Нет такой команды.\n";
             break;
