@@ -18,7 +18,7 @@ struct Pipe {
 
 std::ostream& operator<< (std::ostream& out, const Pipe& truba)
 {
-   
+    out << endl;
     out << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
     if (truba.rem) { out << "да"; }
     else { out << "нет"; }
@@ -36,18 +36,18 @@ struct Stantia {
 };
 std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
 {
-
+    out << endl;
     out << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
 
 
     return out;
 }
 
-int  tc = 0;
+int tc = 0;
 int sc = 0;
 Pipe createPipe() {
     Pipe truba;
-    truba.id = tc++;
+    truba.id = ++tc;
     truba.rem = false;
     do {
         cin.clear();
@@ -162,7 +162,8 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
 
 void menu()
 {
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n  8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов \n 0. Выход \n";
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов \n 0. Выход \n";
+    cout << "________________________________" << endl;
 }
 
 void changePipe(Pipe& truba)
@@ -194,25 +195,27 @@ void command(int& com)
         cin >> com;
     };
 }
-using filter = bool(*)(Pipe& truba,bool param);
-bool checkRem(Pipe& truba, bool param) {
+template<typename T>
+using filter = bool(*)(const Pipe& truba, T param);
+bool checkRem(const Pipe& truba, bool param) {
     return truba.rem == param;
 }
-bool chechCehRab(Stantia& stan, param) {
+bool chechCehRab(const Stantia& stan, int param) {
     return ((stan.ceh - stan.cehRab)*100 / stan.ceh) >= param;
 }
-vector<int> findTrubyRem(const unordered_map <int, Pipe>& truby, filter rem, bool vremonte )
+template<typename T>
+vector<int> findTrubyRem(const unordered_map<int, Pipe>& truby, filter<T> rem, T vremonte)
 {
     vector <int> trubyRem;
     int i = 0;
-    for (auto& truba : truby)
+    for (auto [id,p] : truby)
     {
-        if (rem(truba, vremonte))
-            res.push_back(i);
+        if (rem(p, vremonte))
+            trubyRem.push_back(i);
         i++;
     }
 
-    return res;
+    return trubyRem;
 }
 
 int main()
@@ -233,7 +236,7 @@ int main()
         {
         case 1: {
             truba = createPipe();
-            truby.insert({ --tc, truba });
+            truby.insert({ tc, truba });
             cout<<truba<<endl;
             break;
         }
@@ -245,20 +248,20 @@ int main()
         }
         case 3: {
             if (truby.size()==0)
-                cout << "Трубы не созданы" << endl;
+                cout <<endl<< "Трубы не созданы" << endl;
             for (auto [id, p] : truby)
                 cout << p;
              if (stantii.size()==0)
-                 cout << "Станции не созданы" << endl;
+                 cout <<endl<< "Станции не созданы" << endl;
              for (auto [id, s] : stantii)
                  cout << s;
             break;
         }
         case 4: {
             if (truby.size() == 0)
-                cout << "Трубы не созданы" << endl;
+                cout << endl << "Трубы не созданы" << endl;
             else {
-                cout << "Введите id трубы: ";
+                cout << endl << "Введите id трубы: ";
                 int id;
                 id=getInt();
 
@@ -268,9 +271,9 @@ int main()
         }
         case 5: {
             if (stantii.size() == 0)
-                cout << "Станция не создана." << endl;
+                cout << endl << "Станция не создана." << endl;
             else {
-                cout << "Введите id стации: ";
+                cout << endl << "Введите id стации: ";
                 int id;
                 id = getInt();
                 changeStan(stantii[id]);
@@ -329,11 +332,12 @@ int main()
             break;
         }*/
         case 8: {
-            for (int i : FindStudentsByFilter(group, CheckByName, name))
-                cout << group[i];
+            bool vremonte=true;
+            for (int i :findTrubyRem(truby, checkRem, vremonte))
+                cout << truby[i];
 
-            for (int i : FindStudentsByFilter(group, CheckByScore, 4.0))
-                cout << group[i];
+            /*for (int i : FindStudentsByFilter(stantii, chechCehRab, 50))
+                cout << stantii[i];*/
 
             break;
         }
@@ -343,7 +347,7 @@ int main()
         }
         
         }
-
+        cout << "________________________________" <<endl;
         
     }
 }
