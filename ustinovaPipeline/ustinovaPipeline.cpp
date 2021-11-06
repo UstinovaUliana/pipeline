@@ -80,7 +80,7 @@ int getInt()
 
 Stantia createStantia() {
     Stantia stan;
-    stan.id = sc++;
+    stan.id = ++sc;
     do {
         cout << "Введите название станции (на английском) и дважды нажмите Enter:";
         getline(cin>>ws, stan.name);
@@ -105,25 +105,21 @@ Stantia createStantia() {
 }
 
 Pipe loadPipe(ifstream& fin) {
-    Pipe truba = {};
-
+    Pipe truba;
         fin >> truba.id;
         fin >> truba.d;
         fin >> truba.l;
         fin >> truba.rem;
-
     return truba;
 }
 
 Stantia loadStantia(ifstream& fin) {
     Stantia stan;
-
     fin >> stan.id;
     getline(fin >> ws, stan.name);
     fin >> stan.ceh;
     fin >> stan.cehRab;
     fin >> stan.eff;
-
     return stan;
 }
 
@@ -147,19 +143,20 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
     cin >> ofileName;
     fout.open(ofileName+".txt", ios::out);
     if (fout.is_open()) {
-        for (int i = 0; i<=--tc; i++) {
+        for (int i = 1; i<=tc; i++) {
             fout << "Truba"<<endl << truby[i].id << endl << truby[i].d << endl << truby[i].l << endl << truby[i].rem << endl;
         }
-        for (int i = 0; i <= --sc; i++) {
-            fout <<"Stantia" << endl << stantii[i].id << endl << stantii[i].name << endl << stantii[i].ceh << endl << stantii[i].cehRab << endl << stantii[i].eff << endl;
-            
+        for (int i = 1; i<=sc; i++) {
+            fout << "Stantia" << endl << stantii[i].id << endl << stantii[i].name << endl << stantii[i].ceh << endl << stantii[i].cehRab << endl << stantii[i].eff << endl;
         }
-
         fout.close();
     }
-    
 }
 
+void loadAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stantii)
+{
+
+}
 void menu()
 {
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов \n 0. Выход \n";
@@ -195,23 +192,29 @@ void command(int& com)
         cin >> com;
     };
 }
+
 template<typename T>
+
 using filter = bool(*)(const Pipe& truba, T param);
+
 bool checkRem(const Pipe& truba, bool param) {
     return truba.rem == param;
 }
+
 bool chechCehRab(const Stantia& stan, int param) {
     return ((stan.ceh - stan.cehRab)*100 / stan.ceh) >= param;
 }
+
 template<typename T>
+
 vector<int> findTrubyRem(const unordered_map<int, Pipe>& truby, filter<T> rem, T vremonte)
 {
-    vector <int> trubyRem;
+    vector<int> trubyRem;
     int i = 0;
     for (auto [id,p] : truby)
     {
         if (rem(p, vremonte))
-            trubyRem.push_back(i);
+            trubyRem.push_back(id);
         i++;
     }
 
@@ -242,7 +245,7 @@ int main()
         }
         case 2: {
             stan = createStantia();
-            stantii.insert({ --sc, stan });
+            stantii.insert({ sc, stan });
             cout << stan << endl;
             break;
         }
@@ -308,9 +311,9 @@ int main()
                 break;
             }
             string type;
+            tc = 1;
+            sc = 1;
             while (!fin.eof()) {
-                tc = 0;
-                sc = 0;
                 getline(fin,type);
                 if (type == "Truba") {
                  truby[tc] = loadPipe(fin);
@@ -320,11 +323,8 @@ int main()
                     stantii[sc] = loadStantia(fin);
                     sc++;
                 }
-                
             }
-            
             fin.close();
-
             break;
         }
         /*if (cin.fail()) {
@@ -351,16 +351,6 @@ int main()
         
     }
 }
-    //+цехи по вводу
-    //+в название водятся несколько слов
-    //+переменную а убрать, сделать кейсы
-    //+нецелые числа чтобы вводились
-    //+если число 0, ритурн брейк, если другие, "нет такой команды"
-    //+некорректный ввод чисел 
-    //+чтение из файла, ввод в файл
-    //+меню и редактирование - операции
-    //+проверка ввода команды
-    // 
 //+-проверка ввода
 //+-сохранение и загрузка
 
