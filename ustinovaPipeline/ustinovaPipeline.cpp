@@ -159,7 +159,7 @@ void loadAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
 }
 void menu()
 {
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов \n 0. Выход \n";
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов (больше введённого) \n 10. Отредактировать несколько труб \n 0. Выход \n";
     cout << "________________________________" << endl;
 }
 
@@ -201,10 +201,6 @@ bool checkRem(const Pipe& truba, bool param) {
     return truba.rem == param;
 }
 
-bool chechCehRab(const Stantia& stan, int param) {
-    return ((stan.ceh - stan.cehRab)*100 / stan.ceh) >= param;
-}
-
 template<typename T>
 
 vector<int> findTrubyRem(const unordered_map<int, Pipe>& truby, filter<T> rem, T vremonte)
@@ -221,6 +217,29 @@ vector<int> findTrubyRem(const unordered_map<int, Pipe>& truby, filter<T> rem, T
     return trubyRem;
 }
 
+template<typename T>
+
+using filterS = bool(*)(const Stantia& stan, T param);
+
+bool checkCehNrab(const Stantia& stan, int param) {
+    return ((stan.ceh - stan.cehRab) * 100 / stan.ceh) >= param;
+}
+
+template<typename T>
+
+vector<int> findStanCehNrab(const unordered_map<int, Stantia>& stantii, filterS<T> percent, T perCehNRab)
+{
+    vector<int> stantiiPCNR;
+    int i = 0;
+    for (auto [id, s] : stantii)
+    {
+        if (percent(s, perCehNRab))
+            stantiiPCNR.push_back(id);
+        i++;
+    }
+
+    return stantiiPCNR;
+}
 int main()
 {
    
@@ -335,10 +354,33 @@ int main()
             bool vremonte=true;
             for (int i :findTrubyRem(truby, checkRem, vremonte))
                 cout << truby[i];
-
-            /*for (int i : FindStudentsByFilter(stantii, chechCehRab, 50))
-                cout << stantii[i];*/
-
+            break;
+        }
+        case 9: {
+            int perCehNrab;
+            cout << "Введите процент нерабочих цехов: ";
+            perCehNrab=getInt();
+            for (int i :findStanCehNrab(stantii, checkCehNrab, perCehNrab))
+                cout << stantii[i];
+            break;
+        }
+        case 10: {
+            if (truby.size() == 0)
+                cout << endl << "Трубы не созданы" << endl;
+            else {
+                cout << endl << "Количество изменяемых труб: ";
+                int kolvo = getInt();
+                vector<int> trubyChange;
+                for (int i = 1; i <= kolvo; i++)
+                {
+                    cout << endl << "Введите id трубы: ";
+                    int id = getInt();
+                    trubyChange.push_back(id);
+                    
+                }
+                for (int i:trubyChange)
+                changePipe(truby[i]);
+            }
             break;
         }
         default: {
