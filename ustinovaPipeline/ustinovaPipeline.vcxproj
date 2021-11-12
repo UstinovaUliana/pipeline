@@ -140,9 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="Stantia.cpp" />
     <ClCompile Include="ustinovaPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Pipe.h" />
+    <ClInclude Include="Stantia.h" />
     <ClInclude Include="ustinovaPipeline.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
