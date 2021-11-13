@@ -67,7 +67,7 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
 }
 void menu()
 {
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов (больше введённого) \n 10. Отредактировать несколько труб \n 11.Удалить трубу\n 12.Удалить КС\n 0. Выход \n";
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов (больше введённого) \n 10. Поиск труб по названию \n 0. Выход \n";
     cout << "________________________________" << endl;
 }
 
@@ -93,14 +93,17 @@ bool checkRem(const Pipe& truba, bool param) {
 bool checkCehNrab(const Stantia& stan, int param) {
     return ((stan.ceh - stan.cehRab) * 100 / stan.ceh) >= param;
 }
+bool checkName(const Stantia& stan, string param) {
+    return stan.name == param;
+}
 template<typename T, typename Obj>
 
 vector<int> findObject(const unordered_map<int, Obj>& object, filter<T,Obj> f, T param)
 {
     vector<int> found;
-    for (auto [id,p] : object)
+    for (auto [id,o] : object)
     {
-        if (f(p, param))
+        if (f(o, param))
             found.push_back(id);
     }
 
@@ -127,8 +130,8 @@ int main()
             break;
         }
         case 2: {
-            stantii.emplace(Stantia::maxId+1, Stantia(Stantia::maxId+1));
-            cout << stantii[Stantia::maxId+1] << endl;
+            stantii.emplace(Stantia::maxId, Stantia(Stantia::maxId+1));
+            cout << stantii[Stantia::maxId] << endl;
             break;
         }
         case 3: {
@@ -149,7 +152,6 @@ int main()
                 cout << endl << "Введите id трубы: ";
                 int id;
                 id=getInt();
-
                 truby[id].changePipe();
             }
             break;
@@ -184,6 +186,29 @@ int main()
             bool vremonte=true;
             for (int i :findObject(truby, checkRem, vremonte))
                 cout << truby[i];
+            int com2;
+            cout << "0.Выход\n1.Удалить трубы \n2.Запустить трубы\n";
+            command(com2);
+            switch (com2) {
+            case 0: {
+                break;
+            }
+
+            case 1: {
+                for (int i : findObject(truby, checkRem, vremonte)) 
+                    truby.erase(i);
+                break;
+            }
+            case 2: {
+                for (int i : findObject(truby, checkRem, vremonte))
+                    truby[i].changePipe();
+                break;
+            }
+            default: {
+                cout << "Нет такой команды.\n";
+                break;
+            }
+            }
             break;
         }
         case 9: {
@@ -194,7 +219,7 @@ int main()
                 cout << stantii[i];
             break;
         }
-        case 10: {
+        /*case 10: {
             if (truby.size() == 0)
                 cout << endl << "Трубы не созданы" << endl;
             else {
@@ -212,11 +237,22 @@ int main()
                 truby[i].changePipe();
             }
             break;
-        }
-        case 11: {
+        }*/
+       /* case 11: {
             cout << endl << "Введите id трубы: ";
             int id = getInt();
             truby.erase(id);
+            break;
+        }*/
+        case 10: {
+            string name = "";
+            do {
+                cout << "Введите название станции (на английском):";
+                getline(cin >> ws, name);
+
+            } while (cin.fail());
+            for (int i : findObject(stantii, checkName, name))
+                cout << stantii[i];
             break;
         }
         default: {
@@ -230,9 +266,8 @@ int main()
     }
 }
 //+-проверка ввода
-//удаление труб и станций
-//трубы в ремонте - удалить/запустить
-//поиск станций по имени - разные имена
+//?трубы в ремонте - удалить/запустить; если не найдено труб в ремонте
+//беды 
 
 
 
