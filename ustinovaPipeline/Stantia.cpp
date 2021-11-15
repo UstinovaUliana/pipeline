@@ -1,13 +1,15 @@
 #include "Stantia.h"
+#include "Header.h"
 #include <iostream>;
 using namespace std;
 int Stantia::maxId = 0;
-Stantia::Stantia(int id)
+
+
+Stantia& Stantia::CreateStantia(Stantia& s)
 {
-    this->id = id;
     do {
         cout << "¬ведите название станции (на английском) и дважды нажмите Enter:";
-        getline(cin >> ws, this->name);
+        getline(cin >> ws, s.name);
 
     } while (cin.fail());
 
@@ -15,22 +17,21 @@ Stantia::Stantia(int id)
         cin.clear();
         cin.ignore(2000, '\n');
         cout << "¬ведите кол-во цехов: ";
-        cin >> this->ceh;
-    } while (cin.fail() || this->ceh < 1 || this->ceh>10);
-    this->cehRab = 1;
-    this->eff = 100 * this->cehRab / this->ceh;
+        cin >> s.ceh;
+    } while (cin.fail() || s.ceh < 1 || s.ceh>10);
+    s.cehRab = 1;
+    s.eff = 100 * s.cehRab / s.ceh;
     do {
         cin.clear();
         cin.ignore(2000, '\n');
         cout << "¬ведите эффективность: ";
-        cin >> this->eff;
+        cin >> s.eff;
     } while (cin.fail());
-    ++maxId;
+    return s;
 }
 
-Stantia::Stantia()
+Stantia::Stantia():id(++maxId)
 {
-    ++maxId;
 }
 
 Stantia::~Stantia()
@@ -40,19 +41,18 @@ Stantia::~Stantia()
 void Stantia::changeStan()
 {
     cout << "¬ведите кол-во рабочих цехов: ";
-    cin >> this->cehRab;
+    this->cehRab=getInt();
     while (this->cehRab > this->ceh || this->cehRab < 0) {
         cin.clear();
         cin.ignore(2000, '\n');
         cout << "¬ведите кол-во рабочих цехов: ";
         cin >> this->cehRab;
     }
-    cout << this;
+    cout << *this;
 }
 
-Stantia Stantia::loadStantia(ifstream& fin)
+Stantia& Stantia::loadStantia(ifstream& fin, Stantia& stan)
 {
-    Stantia stan;
     fin >> stan.id;
     getline(fin >> ws, stan.name);
     fin >> stan.ceh;

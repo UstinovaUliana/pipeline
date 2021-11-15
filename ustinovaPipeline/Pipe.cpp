@@ -3,30 +3,30 @@
 using namespace std;
 
 int Pipe::maxId = 0;
-Pipe::Pipe(int id)
+
+Pipe& Pipe::CreatePipe(Pipe& p)
 {
-    ++maxId;
-    this->id=id;
-    this->rem = false;
+    p.id = id;
+    p.rem = false;
     do {
         cin.clear();
         cin.ignore(2000, '\n');
         cout << "¬ведите диаметр трубы, мм (50-2000):";
-        cin >> this->d;
-    } while (cin.fail() || this->d < 50 || this->d>2000);
+        cin >> p.d;
+    } while (cin.fail() || p.d < 50 || p.d>2000);
     do {
         cin.clear();
         cin.ignore(2000, '\n');
         cout << "¬ведите длину трубы, км (0.05-10000):";
-        cin >> this->l;
-    } while (cin.fail() || this->l < 0.05 || this->l>10000);
-
+        cin >> p.l;
+    } while (cin.fail() || p.l < 0.05 || p.l>10000);
+    return p;
 }
 
-Pipe::Pipe()
+Pipe::Pipe():id(++maxId)
 {
-    ++maxId;
 }
+
 
 Pipe::~Pipe()
 {
@@ -35,12 +35,11 @@ Pipe::~Pipe()
 void Pipe::changePipe()
 {
     this->rem = !this->rem;
-    cout << this;
+    cout << *this;
 }
 
-Pipe Pipe::loadPipe(ifstream& fin)
+Pipe& Pipe::loadPipe(ifstream& fin, Pipe& pipe)
 {
-    Pipe pipe;
     fin >> pipe.id;
     fin >> pipe.d;
     fin >> pipe.l;

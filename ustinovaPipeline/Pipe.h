@@ -5,6 +5,7 @@
 using namespace std;
 class Pipe
 {
+    static int maxId;
     public:
 
     int id;
@@ -12,12 +13,12 @@ class Pipe
     double l;
     bool rem;
     friend std::ostream& operator<< (std::ostream& out, const Pipe& pipe);
-    static int maxId;
+ 
 
-    Pipe(int id);
+    Pipe& CreatePipe(Pipe& p);
     Pipe();
     ~Pipe();
     void changePipe();
-    static Pipe loadPipe(ifstream& fin);
+    static Pipe& loadPipe(ifstream& fin, Pipe& pipe);
 };
 

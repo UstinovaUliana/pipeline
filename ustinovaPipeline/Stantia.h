@@ -5,6 +5,7 @@
 using namespace std;
 class Stantia
 {
+    static int maxId;
 public:
     int id;
     string name;
@@ -12,11 +13,11 @@ public:
     int cehRab;
     int eff;
     friend std::ostream& operator<< (std::ostream& out, const Stantia& stan);
-    static int maxId;
-    Stantia(int id);
+  
+    Stantia& CreateStantia(Stantia& s);
     Stantia();
     ~Stantia();
     void changeStan();
-    static Stantia loadStantia(ifstream& fin);
+    static Stantia& loadStantia(ifstream& fin, Stantia& s);
 };
 

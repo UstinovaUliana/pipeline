@@ -141,10 +141,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Stantia.cpp" />
     <ClCompile Include="ustinovaPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Stantia.h" />
     <ClInclude Include="ustinovaPipeline.h" />

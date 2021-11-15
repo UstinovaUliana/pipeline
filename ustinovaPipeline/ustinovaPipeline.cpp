@@ -5,20 +5,9 @@
 #include "ustinovaPipeline.h"
 #include "Pipe.h"
 #include "Stantia.h"
+#include "Header.h"
 #include <unordered_map>
 using namespace std;
-
-int getInt()
-{
-    int input;
-    while (1) {
-        cin >> input;
-        if (!cin.fail())
-            return input;
-        cin.clear();
-        cin.ignore(2000, '\n');
-    }
-}
 
 void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stantii)
 {
@@ -40,8 +29,6 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
 
 void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& stantii)
 {
-    Pipe::maxId = 0;
-    Stantia::maxId = 0;
     ifstream fin;
     cout << "Введите название файла: ";
     string ifileName;
@@ -55,10 +42,12 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
         while (!fin.eof()) {
             getline(fin, type);
             if (type == "Truba") {
-                truby.emplace(Pipe::maxId+1, Pipe::loadPipe(fin));
+                Pipe p;
+                truby.emplace(p.id, Pipe::loadPipe(fin, p));
             }
             if (type == "Stantia") {
-                stantii.emplace(Stantia::maxId+1, Stantia::loadStantia(fin));
+                Stantia s;
+                stantii.emplace(s.id, Stantia::loadStantia(fin,s));
             }
         }
         fin.close();
@@ -125,13 +114,15 @@ int main()
         switch (com)
         {
         case 1: {
-            truby.emplace( Pipe::maxId, Pipe(Pipe::maxId+1));
-            cout<< truby[Pipe::maxId]<<endl;
+            Pipe p;
+            truby.emplace(p.id, p.CreatePipe(p));
+            cout<< truby[p.id]<<endl;
             break;
         }
         case 2: {
-            stantii.emplace(Stantia::maxId, Stantia(Stantia::maxId+1));
-            cout << stantii[Stantia::maxId] << endl;
+            Stantia s;
+            stantii.emplace(s.id, s.CreateStantia(s));
+            cout << stantii[s.id] << endl;
             break;
         }
         case 3: {
@@ -184,8 +175,13 @@ int main()
         }
         case 8: {
             bool vremonte=true;
-            for (int i :findObject(truby, checkRem, vremonte))
-                cout << truby[i];
+            vector <int> TR= findObject(truby, checkRem, vremonte);
+            if (TR.size() == 0) {
+                cout << "Все трубы в работе" << endl;
+                break;
+            }
+            else {
+            for (int i : TR) cout << truby[i];
             int com2;
             cout << "0.Выход\n1.Удалить трубы \n2.Запустить трубы\n";
             command(com2);
@@ -195,7 +191,7 @@ int main()
             }
 
             case 1: {
-                for (int i : findObject(truby, checkRem, vremonte)) 
+                for (int i : findObject(truby, checkRem, vremonte))
                     truby.erase(i);
                 break;
             }
@@ -209,6 +205,7 @@ int main()
                 break;
             }
             }
+            }
             break;
         }
         case 9: {
@@ -219,31 +216,7 @@ int main()
                 cout << stantii[i];
             break;
         }
-        /*case 10: {
-            if (truby.size() == 0)
-                cout << endl << "Трубы не созданы" << endl;
-            else {
-                cout << endl << "Количество изменяемых труб: ";
-                int kolvo = getInt();
-                vector<int> trubyChange;
-                for (int i = 1; i <= kolvo; i++)
-                {
-                    cout << endl << "Введите id трубы: ";
-                    int id = getInt();
-                    trubyChange.push_back(id);
-                    
-                }
-                for (int i:trubyChange)
-                truby[i].changePipe();
-            }
-            break;
-        }*/
-       /* case 11: {
-            cout << endl << "Введите id трубы: ";
-            int id = getInt();
-            truby.erase(id);
-            break;
-        }*/
+        
         case 10: {
             string name = "";
             do {
@@ -265,9 +238,7 @@ int main()
         
     }
 }
-//+-проверка ввода
-//?трубы в ремонте - удалить/запустить; если не найдено труб в ремонте
-//беды 
+
 
 
 
