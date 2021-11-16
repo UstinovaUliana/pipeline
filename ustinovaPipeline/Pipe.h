@@ -5,20 +5,20 @@
 using namespace std;
 class Pipe
 {
-    static int maxId;
+    int id;
     public:
 
-    int id;
+        static int maxId;
     double d;
     double l;
     bool rem;
+    int getId() { return id; };
+    friend std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe);
+    friend std::istream& operator>> (std::istream& out, Pipe& p);
     friend std::ostream& operator<< (std::ostream& out, const Pipe& pipe);
+    friend std::ofstream& operator<< (std::ofstream& out, const Pipe& pipe);
  
-
-    Pipe& CreatePipe(Pipe& p);
     Pipe();
-    ~Pipe();
     void changePipe();
-    static Pipe& loadPipe(ifstream& fin, Pipe& pipe);
 };
 

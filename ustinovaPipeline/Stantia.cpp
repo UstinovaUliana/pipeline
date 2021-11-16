@@ -5,7 +5,7 @@ using namespace std;
 int Stantia::maxId = 0;
 
 
-Stantia& Stantia::CreateStantia(Stantia& s)
+std::istream& operator>> (std::istream& in, Stantia& s)
 {
     do {
         cout << "Введите название станции (на английском) и дважды нажмите Enter:";
@@ -27,14 +27,10 @@ Stantia& Stantia::CreateStantia(Stantia& s)
         cout << "Введите эффективность: ";
         cin >> s.eff;
     } while (cin.fail());
-    return s;
+    return in;
 }
 
 Stantia::Stantia():id(++maxId)
-{
-}
-
-Stantia::~Stantia()
 {
 }
 
@@ -51,20 +47,29 @@ void Stantia::changeStan()
     cout << *this;
 }
 
-Stantia& Stantia::loadStantia(ifstream& fin, Stantia& stan)
-{
-    fin >> stan.id;
-    getline(fin >> ws, stan.name);
-    fin >> stan.ceh;
-    fin >> stan.cehRab;
-    fin >> stan.eff;
-    return stan;
-}
+
 
 
 std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
 {
     out << endl;
     out << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+    return out;
+}
+std::ifstream& operator>> (std::ifstream& fin, Stantia& stan)
+{
+    fin >> stan.id;
+    getline(fin >> ws, stan.name);
+    fin >> stan.ceh;
+    fin >> stan.cehRab;
+    fin >> stan.eff;
+    return fin;
+}
+
+
+std::ofstream& operator<< (std::ofstream& out, Stantia& s) {
+
+
+    out << "Stantia" << endl << s.id << endl << s.name << endl << s.ceh << endl << s.cehRab << endl << s.eff << endl;
     return out;
 }

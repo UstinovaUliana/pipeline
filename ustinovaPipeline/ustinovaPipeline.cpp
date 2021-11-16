@@ -14,14 +14,17 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
     ofstream fout;
     cout << "Введите название файла: ";
     string ofileName;
-    cin >> ofileName;
+    getline(cin, ofileName);
     fout.open(ofileName+".txt", ios::out);
+  
     if (fout.is_open()) {
-        for (int i = 1; i<=truby.size(); i++) {
-            fout << "Truba"<<endl << truby[i].id << endl << truby[i].d << endl << truby[i].l << endl << truby[i].rem << endl;
+        fout << Pipe::maxId<<endl;
+        fout << Stantia::maxId << endl;
+        for (auto& [id,t]:truby) {
+            fout << t << endl;
         }
-        for (int i = 1; i<=stantii.size(); i++) {
-            fout << "Stantia" << endl << stantii[i].id << endl << stantii[i].name << endl << stantii[i].ceh << endl << stantii[i].cehRab << endl << stantii[i].eff << endl;
+        for (auto& [id, s] : stantii) {
+            fout << s << endl;
         }
         fout.close();
     }
@@ -32,24 +35,34 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
     ifstream fin;
     cout << "Введите название файла: ";
     string ifileName;
-    cin >> ifileName;
+    cin >> ws;
+    getline(cin, ifileName);
     fin.open(ifileName + ".txt", ios::in);
     if (fin.is_open())
     {
+        int wpId;
+        int wsId;
         string type;
         truby.clear();
-        stantii.clear();
+        stantii.clear(); 
+        fin >> wpId;
+        fin >> wsId;
         while (!fin.eof()) {
+           
             getline(fin, type);
             if (type == "Truba") {
                 Pipe p;
-                truby.emplace(p.id, Pipe::loadPipe(fin, p));
+                fin >> p;
+                truby.emplace(p.getId(), p);
             }
             if (type == "Stantia") {
                 Stantia s;
-                stantii.emplace(s.id, Stantia::loadStantia(fin,s));
+                fin >> s;
+                stantii.emplace(s.getId(), s);
             }
         }
+        Pipe::maxId = wpId;
+        Stantia::maxId = wsId;
         fin.close();
     }
     else cout << "Не открывается." << endl;
@@ -115,14 +128,15 @@ int main()
         {
         case 1: {
             Pipe p;
-            truby.emplace(p.id, p.CreatePipe(p));
-            cout<< truby[p.id]<<endl;
+            cin >> p;
+            truby.emplace(p.getId(), p);
+            cout<< truby[p.getId()]<<endl;
             break;
         }
         case 2: {
             Stantia s;
-            stantii.emplace(s.id, s.CreateStantia(s));
-            cout << stantii[s.id] << endl;
+            stantii.emplace(s.getId(), s);
+            cout << stantii[s.getId()] << endl;
             break;
         }
         case 3: {
@@ -154,7 +168,9 @@ int main()
                 cout << endl << "Введите id стации: ";
                 int id;
                 id = getInt();
-                stantii[id].changeStan();
+                auto st = stantii.find(id);// ].changeStan();
+                if (st != stantii.end())
+                    stantii[id].changeStan();
             }
             break;
         }
@@ -238,9 +254,3 @@ int main()
         
     }
 }
-
-
-
-
-
-
