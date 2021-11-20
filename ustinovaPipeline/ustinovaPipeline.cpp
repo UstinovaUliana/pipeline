@@ -14,6 +14,7 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
     ofstream fout;
     cout << "Введите название файла: ";
     string ofileName;
+    cin >> ws;
     getline(cin, ofileName);
     fout.open(ofileName+".txt", ios::out);
   
@@ -135,6 +136,7 @@ int main()
         }
         case 2: {
             Stantia s;
+            cin >> s;
             stantii.emplace(s.getId(), s);
             cout << stantii[s.getId()] << endl;
             break;
@@ -142,11 +144,11 @@ int main()
         case 3: {
             if (truby.size()==0)
                 cout <<endl<< "Трубы не созданы" << endl;
-            for (auto [id, p] : truby)
+            else  for (auto [id, p] : truby)
                 cout << p;
              if (stantii.size()==0)
                  cout <<endl<< "Станции не созданы" << endl;
-             for (auto [id, s] : stantii)
+             else  for (auto [id, s] : stantii)
                  cout << s;
             break;
         }
@@ -157,13 +159,15 @@ int main()
                 cout << endl << "Введите id трубы: ";
                 int id;
                 id=getInt();
-                truby[id].changePipe();
+                auto p = truby.find(id);
+                if (p != truby.end())
+                    truby[id].changePipe();
             }
             break;
         }
         case 5: {
             if (stantii.size() == 0)
-                cout << endl << "Станция не создана." << endl;
+                cout << endl << "Станции не созданы" << endl;
             else {
                 cout << endl << "Введите id стации: ";
                 int id;

@@ -11,5 +11,6 @@ int getInt()
             return input;
         cin.clear();
         cin.ignore(2000, '\n');
+        cout<<"Ошибка, повторите ввод"<<endl;
     }
 }
