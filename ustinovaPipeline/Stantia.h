@@ -11,7 +11,8 @@ public:
     string name;
     int ceh;
     int cehRab;
-    int eff;
+    int eff;/*
+    vector <int> conPipes;*/
 
     int getId() { return id; };
     static int maxId;

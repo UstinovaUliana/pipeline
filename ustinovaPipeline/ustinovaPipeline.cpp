@@ -7,8 +7,13 @@
 #include "Stantia.h"
 #include "Header.h"
 #include <unordered_map>
+#include <map>
 using namespace std;
 
+struct pairCS {
+    int fromCSid;
+    int toCSid;
+};
 void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stantii)
 {
     ofstream fout;
@@ -70,7 +75,10 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
 }
 void menu()
 {
-    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n 9. Поиск станций по проценту нерабочих цехов (больше введённого) \n 10. Поиск станций по названию \n 0. Выход \n";
+    cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n"
+         <<"5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n "
+         <<"9. Поиск станций по проценту нерабочих цехов(больше введённого) \n 10. Поиск станций по названию \n "
+         <<"11. Установить трубу \n  12. Отсоединить трубу \n 13. Удалить трубу \n 14. Удалить КС \n 0.Выход \n";
     cout << "________________________________" << endl;
 }
 
@@ -120,7 +128,7 @@ int main()
     int com;
     unordered_map <int, Pipe> truby;
     unordered_map <int, Stantia> stantii;
-
+    map <int, pairCS> CPC;
     while (1) {
         menu();
         command(com);
@@ -211,8 +219,14 @@ int main()
             }
 
             case 1: {
-                for (int i : findObject(truby, checkRem, vremonte))
-                    truby.erase(i);
+                for (int i : findObject(truby, checkRem, vremonte)) {
+                    if (truby[i].idIn == 0) {
+                        truby.erase(i);
+                        cout << "Труба " <<i<<" удалена." << endl;
+                    }
+                    else cout << "Труба " << i << " соединяет станции, удалить нельзя." << endl;
+                    
+                }
                 break;
             }
             case 2: {
@@ -246,6 +260,64 @@ int main()
             } while (cin.fail());
             for (int i : findObject(stantii, checkName, name))
                 cout << stantii[i];
+            break;
+        }
+        case 11: {
+            if (truby.size() == 0)
+                cout << endl << "Трубы не созданы" << endl;
+            else {
+                cout << endl << "Введите id трубы: ";
+                int id;
+                id = getInt();
+                auto p = truby.find(id);
+                if (p != truby.end()) {
+                    cout << endl << "Введите id станции-истока: ";
+                    int fromId;
+                    fromId = getInt();
+                    cout << endl << "Введите id станции-стока: ";
+                    int toId;
+                    toId = getInt();
+                    truby[id].connectPipe(fromId,toId);
+                    //к станциям присоединили трубу
+                }
+            }
+            break;
+        }
+        case 12: {
+            if (truby.size() == 0)
+                cout << endl << "Трубы не созданы" << endl;
+            else {
+                cout << endl << "Введите id трубы: ";
+                int id;
+                id = getInt();
+                auto p = truby.find(id);
+                if (p != truby.end()) {
+                    truby[id].disconnectPipe();
+                    //от станций отсоединили трубу
+                }
+            }
+            break;
+        }
+        case 13: {
+            cout << endl << "Введите id трубы: ";
+            int id;
+            id = getInt();
+            if (truby[id].idIn == 0) {
+                truby.erase(id);
+                cout << "Труба удалена." << endl;
+            }
+            else cout << "Труба соединяет станции, удалить нельзя."<<endl;
+            break;
+        }
+        case 14: {
+            cout << endl << "Введите id станции: ";
+            int id;
+            id = getInt();
+            /*if (truby[id].idIn = {}) {
+                truby.erase(id);
+                cout << "Станция удалена." << endl;
+            }
+            else cout << "Станция соединена с другими, удалить нельзя." << endl;*/
             break;
         }
         default: {

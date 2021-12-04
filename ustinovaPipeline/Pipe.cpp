@@ -13,6 +13,14 @@ void Pipe::changePipe()
     this->rem = !this->rem;
     cout << *this;
 }
+void Pipe::connectPipe(int from, int to) {
+    this->idOut = from;
+    this->idIn = to;
+}
+void Pipe::disconnectPipe() {
+    this->idOut = 0;
+    this->idIn = 0;
+}
 
 std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe)
 {
@@ -26,6 +34,8 @@ std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe)
 std::istream& operator>> (std::istream& in, Pipe& p)
 {
     p.rem = false;
+    p.idIn = 0;
+    p.idOut = 0;
     do {
         in.clear();
         in.ignore(2000, '\n');

@@ -6,12 +6,13 @@ using namespace std;
 class Pipe
 {
     int id;
-    public:
-
-        static int maxId;
+  public:
+    static int maxId;
     double d;
     double l;
     bool rem;
+    int idOut;
+    int idIn;
     int getId() { return id; };
     friend std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe);
     friend std::istream& operator>> (std::istream& out, Pipe& p);
@@ -20,5 +21,7 @@ class Pipe
  
     Pipe();
     void changePipe();
+    void connectPipe(int idOut, int idInt);
+    void disconnectPipe();
 };
 
