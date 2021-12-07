@@ -3,17 +3,13 @@
 #include <string>
 #include <fstream>
 #include "ustinovaPipeline.h"
-#include "Pipe.h"
-#include "Stantia.h"
 #include "Header.h"
+#include "GTS.h"
 #include <unordered_map>
 #include <map>
 using namespace std;
 
-struct pairCS {
-    int fromCSid;
-    int toCSid;
-};
+
 void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stantii)
 {
     ofstream fout;
@@ -123,12 +119,9 @@ vector<int> findObject(const unordered_map<int, Obj>& object, filter<T,Obj> f, T
 
 int main()
 {
-   
+    GTS gts;
     setlocale(LC_ALL, "Russian");
     int com;
-    unordered_map <int, Pipe> truby;
-    unordered_map <int, Stantia> stantii;
-    map <int, pairCS> CPC;
     while (1) {
         menu();
         command(com);
@@ -138,51 +131,51 @@ int main()
         case 1: {
             Pipe p;
             cin >> p;
-            truby.emplace(p.getId(), p);
-            cout<< truby[p.getId()]<<endl;
+            gts.truby.emplace(p.getId(), p);
+            cout<< gts.truby[p.getId()]<<endl;
             break;
         }
         case 2: {
             Stantia s;
             cin >> s;
-            stantii.emplace(s.getId(), s);
-            cout << stantii[s.getId()] << endl;
+            gts.stantii.emplace(s.getId(), s);
+            cout << gts.stantii[s.getId()] << endl;
             break;
         }
         case 3: {
-            if (truby.size()==0)
+            if (gts.truby.size()==0)
                 cout <<endl<< "Трубы не созданы" << endl;
-            else  for (auto [id, p] : truby)
+            else  for (auto [id, p] : gts.truby)
                 cout << p;
-             if (stantii.size()==0)
+             if (gts.stantii.size()==0)
                  cout <<endl<< "Станции не созданы" << endl;
-             else  for (auto [id, s] : stantii)
+             else  for (auto [id, s] : gts.stantii)
                  cout << s;
             break;
         }
         case 4: {
-            if (truby.size() == 0)
+            if (gts.truby.size() == 0)
                 cout << endl << "Трубы не созданы" << endl;
             else {
                 cout << endl << "Введите id трубы: ";
                 int id;
                 id=getInt();
-                auto p = truby.find(id);
-                if (p != truby.end())
-                    truby[id].changePipe();
+                auto p = gts.truby.find(id);
+                if (p != gts.truby.end())
+                    gts.truby[id].changePipe();
             }
             break;
         }
         case 5: {
-            if (stantii.size() == 0)
+            if (gts.stantii.size() == 0)
                 cout << endl << "Станции не созданы" << endl;
             else {
                 cout << endl << "Введите id стации: ";
                 int id;
                 id = getInt();
-                auto st = stantii.find(id);// ].changeStan();
-                if (st != stantii.end())
-                    stantii[id].changeStan();
+                auto st = gts.stantii.find(id);// ].changeStan();
+                if (st != gts.stantii.end())
+                    gts.stantii[id].changeStan();
             }
             break;
         }
@@ -192,24 +185,24 @@ int main()
         }
         
         case 6: {
-            saveAll(truby, stantii);
+            saveAll(gts.truby, gts.stantii);
             cout << "Сохранено!" << endl;
             break;
         }
         case 7: {
-            loadAll(truby, stantii);
+            loadAll(gts.truby, gts.stantii);
             cout << "Загружено!" << endl;
             break;
         }
         case 8: {
             bool vremonte=true;
-            vector <int> TR= findObject(truby, checkRem, vremonte);
+            vector <int> TR= findObject(gts.truby, checkRem, vremonte);
             if (TR.size() == 0) {
                 cout << "Все трубы в работе" << endl;
                 break;
             }
             else {
-            for (int i : TR) cout << truby[i];
+            for (int i : TR) cout << gts.truby[i];
             int com2;
             cout << "0.Выход\n1.Удалить трубы \n2.Запустить трубы\n";
             command(com2);
@@ -219,9 +212,9 @@ int main()
             }
 
             case 1: {
-                for (int i : findObject(truby, checkRem, vremonte)) {
-                    if (truby[i].idIn == 0) {
-                        truby.erase(i);
+                for (int i : findObject(gts.truby, checkRem, vremonte)) {
+                    if (gts.truby[i].idIn == 0) {
+                        gts.truby.erase(i);
                         cout << "Труба " <<i<<" удалена." << endl;
                     }
                     else cout << "Труба " << i << " соединяет станции, удалить нельзя." << endl;
@@ -230,8 +223,8 @@ int main()
                 break;
             }
             case 2: {
-                for (int i : findObject(truby, checkRem, vremonte))
-                    truby[i].changePipe();
+                for (int i : findObject(gts.truby, checkRem, vremonte))
+                    gts.truby[i].changePipe();
                 break;
             }
             default: {
@@ -246,8 +239,8 @@ int main()
             int perCehNrab;
             cout << "Введите процент нерабочих цехов: ";
             perCehNrab=getInt();
-            for (int i :findObject(stantii, checkCehNrab, perCehNrab))
-                cout << stantii[i];
+            for (int i :findObject(gts.stantii, checkCehNrab, perCehNrab))
+                cout << gts.stantii[i];
             break;
         }
         
@@ -258,42 +251,40 @@ int main()
                 getline(cin >> ws, name);
 
             } while (cin.fail());
-            for (int i : findObject(stantii, checkName, name))
-                cout << stantii[i];
+            for (int i : findObject(gts.stantii, checkName, name))
+                cout << gts.stantii[i];
             break;
         }
         case 11: {
-            if (truby.size() == 0)
+            if (gts.truby.size() == 0)
                 cout << endl << "Трубы не созданы" << endl;
             else {
                 cout << endl << "Введите id трубы: ";
                 int id;
                 id = getInt();
-                auto p = truby.find(id);
-                if (p != truby.end()) {
+                auto p = gts.truby.find(id);
+                if (p != gts.truby.end()) {
                     cout << endl << "Введите id станции-истока: ";
                     int fromId;
                     fromId = getInt();
                     cout << endl << "Введите id станции-стока: ";
                     int toId;
                     toId = getInt();
-                    truby[id].connectPipe(fromId,toId);
-                    //к станциям присоединили трубу
+                    gts.connectPipe(gts.stantii[fromId],gts.truby[id], gts.stantii[toId]);
                 }
             }
             break;
         }
         case 12: {
-            if (truby.size() == 0)
+            if (gts.truby.size() == 0)
                 cout << endl << "Трубы не созданы" << endl;
             else {
                 cout << endl << "Введите id трубы: ";
                 int id;
                 id = getInt();
-                auto p = truby.find(id);
-                if (p != truby.end()) {
-                    truby[id].disconnectPipe();
-                    //от станций отсоединили трубу
+                auto p = gts.truby.find(id);
+                if (p != gts.truby.end()) {
+                    gts.disconnectPipe(gts.stantii[gts.truby[id].idOut], gts.truby[id], gts.stantii[gts.truby[id].idIn]);
                 }
             }
             break;
@@ -302,8 +293,8 @@ int main()
             cout << endl << "Введите id трубы: ";
             int id;
             id = getInt();
-            if (truby[id].idIn == 0) {
-                truby.erase(id);
+            if (gts.truby[id].idIn == 0) {
+                gts.truby.erase(id);
                 cout << "Труба удалена." << endl;
             }
             else cout << "Труба соединяет станции, удалить нельзя."<<endl;
@@ -313,11 +304,11 @@ int main()
             cout << endl << "Введите id станции: ";
             int id;
             id = getInt();
-            /*if (truby[id].idIn = {}) {
-                truby.erase(id);
+            if (stantii[id].PipIn.size() = 0 && stantii[id].PipOut.size() = 0) {
+                stantii.erase(id);
                 cout << "Станция удалена." << endl;
             }
-            else cout << "Станция соединена с другими, удалить нельзя." << endl;*/
+            else cout << "Станция соединена с другими, удалить нельзя." << endl;
             break;
         }
         default: {

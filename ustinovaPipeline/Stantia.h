@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-using namespace std;
+#include <set>
 class Stantia
 {
 
@@ -11,7 +11,10 @@ public:
     string name;
     int ceh;
     int cehRab;
-    int eff;/*
+    int eff;
+    set <int> PipIn;
+    set <int> PipOut;
+    /*
     vector <int> conPipes;*/
 
     int getId() { return id; };

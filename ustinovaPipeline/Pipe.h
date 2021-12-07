@@ -21,7 +21,5 @@ class Pipe
  
     Pipe();
     void changePipe();
-    void connectPipe(int idOut, int idInt);
-    void disconnectPipe();
 };
 

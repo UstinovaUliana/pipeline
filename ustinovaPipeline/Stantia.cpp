@@ -1,6 +1,7 @@
 #include "Stantia.h"
 #include "Header.h"
-#include <iostream>;
+#include <iostream>
+#include <string>
 using namespace std;
 int Stantia::maxId = 0;
 
@@ -9,8 +10,8 @@ std::istream& operator>> (std::istream& in, Stantia& s)
 {
     do {
         cout << "¬ведите название станции (на английском) и дважды нажмите Enter:";
-        getline(cin >> ws, s.name);
-
+        getline(cin>>ws,s.name);
+        
     } while (cin.fail());
 
     do {
@@ -44,6 +45,7 @@ void Stantia::changeStan()
         cout << "¬ведите кол-во рабочих цехов: ";
         cin >> this->cehRab;
     }
+    
     cout << *this;
 }
 
