@@ -25,7 +25,7 @@ void saveAll(unordered_map <int, Pipe> truby, unordered_map <int, Stantia> stant
         for (auto& [id,t]:truby) {
             fout << t << endl;
         }
-        for (auto& [id, s] : stantii) {
+        for (auto& [id,s] : stantii) {
             fout << s << endl;
         }
         fout.close();
@@ -72,9 +72,9 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
 void menu()
 {
     cout << " 1. Добавить трубу \n 2. Добавить КС \n 3. Просмотр всех объектов \n 4. Редактировать трубу \n"
-         <<"5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n "
-         <<"9. Поиск станций по проценту нерабочих цехов(больше введённого) \n 10. Поиск станций по названию \n "
-         <<"11. Установить трубу \n  12. Отсоединить трубу \n 13. Удалить трубу \n 14. Удалить КС \n 0.Выход \n";
+         <<" 5. Редактировать КС \n 6. Сохранить \n 7. Загрузить \n 8. Поиск труб в ремонте \n"
+         <<" 9. Поиск станций по проценту нерабочих цехов(больше введённого) \n 10. Поиск станций по названию \n"
+         <<" 11. Установить трубу \n 12. Отсоединить трубу \n 13. Удалить трубу \n 14. Удалить КС \n 15. Топологическая сортировка \n 0.Выход \n";
     cout << "________________________________" << endl;
 }
 
@@ -143,9 +143,9 @@ int main()
             break;
         }
         case 3: {
-            if (gts.truby.size()==0)
-                cout <<endl<< "Трубы не созданы" << endl;
-            else  for (auto [id, p] : gts.truby)
+            if (gts.truby.size() == 0)
+                cout << endl << "Трубы не созданы" << endl;
+            else  for (auto [id,p] : gts.truby)
                 cout << p;
              if (gts.stantii.size()==0)
                  cout <<endl<< "Станции не созданы" << endl;
@@ -173,7 +173,7 @@ int main()
                 cout << endl << "Введите id стации: ";
                 int id;
                 id = getInt();
-                auto st = gts.stantii.find(id);// ].changeStan();
+                auto st = gts.stantii.find(id);
                 if (st != gts.stantii.end())
                     gts.stantii[id].changeStan();
             }
@@ -270,7 +270,15 @@ int main()
                     cout << endl << "Введите id станции-стока: ";
                     int toId;
                     toId = getInt();
-                    gts.connectPipe(gts.stantii[fromId],gts.truby[id], gts.stantii[toId]);
+                    if (gts.stantii[fromId].PipOut.size() < gts.stantii[fromId].ceh && gts.stantii[toId].PipIn.size() < gts.stantii[toId].ceh) {
+                        gts.connectPipe(gts.stantii[fromId], gts.truby[id], gts.stantii[toId]);
+                        GTS::pairCS pair;
+                        pair.fromCSid = fromId;
+                        pair.toCSid = toId;
+                        gts.CPC.emplace(gts.truby[id], pair);
+                    }
+                      
+                    else cout << "Цеха заполнены." << endl;
                 }
             }
             break;
@@ -304,13 +312,26 @@ int main()
             cout << endl << "Введите id станции: ";
             int id;
             id = getInt();
-            if (stantii[id].PipIn.size() = 0 && stantii[id].PipOut.size() = 0) {
-                stantii.erase(id);
+            if (gts.stantii[id].PipIn.size() == 0 && gts.stantii[id].PipOut.size() == 0) {
+                gts.stantii.erase(id);
                 cout << "Станция удалена." << endl;
             }
             else cout << "Станция соединена с другими, удалить нельзя." << endl;
             break;
         }
+        /*case 15: {
+            for (int i=gts.stantii.size()-1; i>0;i--)
+                if (gts.stantii[i].PipIn.size() == 0) {
+                    gts.matrSmezh[i][0] = gts.stantii[i].getId();
+                    for (auto i : gts.stantii[i].PipOut){
+                        for (auto [id, s1] : gts.stantii) {
+                            s1.PipIn.erase(i);
+                        }
+                    }
+            }
+            break;
+
+        }*/
         default: {
             cout << "Нет такой команды.\n";
             break;

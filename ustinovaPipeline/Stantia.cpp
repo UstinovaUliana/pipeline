@@ -55,7 +55,8 @@ void Stantia::changeStan()
 std::ostream& operator<< (std::ostream& out, const  Stantia& stan)
 {
     out << endl;
-    out << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
+    out << "Станция" << endl << "Id: " << stan.id << endl << "Название: " << stan.name << endl 
+        << "Кол-во цехов: " << stan.ceh << endl << "Цехов в работе: " << stan.cehRab << endl << "Эффективность: " << stan.eff << endl;
     return out;
 }
 std::ifstream& operator>> (std::ifstream& fin, Stantia& stan)
@@ -72,6 +73,7 @@ std::ifstream& operator>> (std::ifstream& fin, Stantia& stan)
 std::ofstream& operator<< (std::ofstream& out, Stantia& s) {
 
 
-    out << "Stantia" << endl << s.id << endl << s.name << endl << s.ceh << endl << s.cehRab << endl << s.eff << endl;
+    out << "Stantia" << endl << s.id << endl << s.name << endl 
+       << s.ceh << endl << s.cehRab << endl << s.eff << endl;
     return out;
 }

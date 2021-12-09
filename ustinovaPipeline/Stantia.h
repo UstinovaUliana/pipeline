@@ -8,15 +8,13 @@ class Stantia
 
     int id;
 public:
-    string name;
+
+    std::string name;
     int ceh;
     int cehRab;
     int eff;
-    set <int> PipIn;
-    set <int> PipOut;
-    /*
-    vector <int> conPipes;*/
-
+    std::set <int> PipIn;
+    std::set <int> PipOut;
     int getId() { return id; };
     static int maxId;
     friend std::ostream& operator<< (std::ostream& out, const Stantia& stan);

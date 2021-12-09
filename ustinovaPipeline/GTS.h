@@ -3,6 +3,7 @@
 #include <map>
 #include "Pipe.h"
 #include "Stantia.h"
+#include <string>
 class GTS
 {
 public:
@@ -15,5 +16,6 @@ public:
     map <int, pairCS> CPC;
     void connectPipe(Stantia sout, Pipe p, Stantia sin);
     void disconnectPipe(Stantia sout, Pipe p, Stantia sin);
+    vector <vector <int>> matrSmezh;
 };
 
