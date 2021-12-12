@@ -272,10 +272,10 @@ int main()
                     toId = getInt();
                     if (gts.stantii[fromId].PipOut.size() < gts.stantii[fromId].ceh && gts.stantii[toId].PipIn.size() < gts.stantii[toId].ceh) {
                         gts.connectPipe(gts.stantii[fromId], gts.truby[id], gts.stantii[toId]);
-                        GTS::pairCS pair;
-                        pair.fromCSid = fromId;
-                        pair.toCSid = toId;
-                        gts.CPC.emplace(gts.truby[id], pair);
+                        GTS::pairCS pairi;
+                        pairi.fromCSid = fromId;
+                        pairi.toCSid = toId;
+                        gts.CPC.emplace(id, pairi);
                     }
                       
                     else cout << "Цеха заполнены." << endl;
@@ -319,19 +319,15 @@ int main()
             else cout << "Станция соединена с другими, удалить нельзя." << endl;
             break;
         }
-        /*case 15: {
-            for (int i=gts.stantii.size()-1; i>0;i--)
-                if (gts.stantii[i].PipIn.size() == 0) {
-                    gts.matrSmezh[i][0] = gts.stantii[i].getId();
-                    for (auto i : gts.stantii[i].PipOut){
-                        for (auto [id, s1] : gts.stantii) {
-                            s1.PipIn.erase(i);
-                        }
-                    }
+        case 15: {
+            map <int, Stantia> res=gts.sort(gts.stantii);
+            for (auto [i, s] : res)
+            {
+                cout << i << endl;
+                cout << s << endl;
             }
             break;
-
-        }*/
+        }
         default: {
             cout << "Нет такой команды.\n";
             break;
@@ -342,3 +338,4 @@ int main()
         
     }
 }
+//сохранение и загрузка

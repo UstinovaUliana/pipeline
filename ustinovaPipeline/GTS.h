@@ -14,8 +14,9 @@ public:
         int toCSid;
     };
     map <int, pairCS> CPC;
-    void connectPipe(Stantia sout, Pipe p, Stantia sin);
-    void disconnectPipe(Stantia sout, Pipe p, Stantia sin);
+    void connectPipe(Stantia& sout, Pipe& p, Stantia& sin);
+    void disconnectPipe(Stantia& sout, Pipe& p, Stantia& sin);
     vector <vector <int>> matrSmezh;
+    map <int, Stantia> sort(unordered_map<int, Stantia> stantii);
 };
 

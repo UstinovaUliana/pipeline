@@ -6,6 +6,8 @@ int Pipe::maxId = 0;
 
 Pipe::Pipe():id(++maxId)
 {
+    this->idIn = 0;
+    this->idOut = 0;
 }
 
 void Pipe::changePipe()
@@ -48,7 +50,8 @@ std::ostream& operator<< (std::ostream& out, const Pipe& truba)
     out << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
     if (truba.rem) { out << "да"; }
     else { out << "нет"; }
-    out << endl;
+    out << endl
+        <<truba.idIn << endl <<truba.idOut<<endl;
     return out;
 }
 std::ofstream& operator<< (std::ofstream& out, const Pipe& t)
