@@ -22,7 +22,8 @@ std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe)
     fin >> pipe.d;
     fin >> pipe.l;
     fin >> pipe.rem;
-
+    fin >> pipe.idIn;
+    fin >> pipe.idOut;
     return fin;
 }
 std::istream& operator>> (std::istream& in, Pipe& p)
@@ -50,12 +51,12 @@ std::ostream& operator<< (std::ostream& out, const Pipe& truba)
     out << "Труба" << endl << "Id: " << truba.id << endl << "Диаметр: " << truba.d << "мм" << endl << "Длина: " << truba.l << "км" << endl << "В ремонте: ";
     if (truba.rem) { out << "да"; }
     else { out << "нет"; }
-    out << endl
-        <<truba.idIn << endl <<truba.idOut<<endl;
+    out << endl;
+       if (truba.idIn!=0) out<< "Ведёт в станцию "<<truba.idIn << " из станции " << truba.idOut << endl;
     return out;
 }
 std::ofstream& operator<< (std::ofstream& out, const Pipe& t)
 {
-    out << "Truba" << endl << t.id << endl << t.d << endl << t.l << endl << t.rem << endl;
+    out << "Truba" << endl << t.id << endl << t.d << endl << t.l << endl << t.rem << endl<<t.idIn<<endl<<t.idOut;
     return out;
 }

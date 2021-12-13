@@ -292,7 +292,12 @@ int main()
                 id = getInt();
                 auto p = gts.truby.find(id);
                 if (p != gts.truby.end()) {
+                    if (gts.truby[id].idIn == 0) {
+                        cout << "Труба не установлена." << endl;
+                        break;
+                    }
                     gts.disconnectPipe(gts.stantii[gts.truby[id].idOut], gts.truby[id], gts.stantii[gts.truby[id].idIn]);
+                    gts.CPC.erase(id);
                 }
             }
             break;

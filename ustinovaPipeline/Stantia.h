@@ -13,6 +13,8 @@ public:
     int ceh;
     int cehRab;
     int eff;
+    int kolvPipIn;
+    int kolvPipOut;
     std::set <int> PipIn;
     std::set <int> PipOut;
     int getId() { return id; };

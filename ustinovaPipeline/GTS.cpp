@@ -18,6 +18,7 @@ map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
     int sortNum=0;
     vector <int> sToChange;
     while (sortResults.size() != stantii.size()) {
+        sToChange.clear();
         for (auto [id,s] : stantii) {
             if (s.PipIn.size() == 0) {
                 sToChange.push_back(id);
@@ -31,6 +32,11 @@ map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
                     s1.PipIn.erase(j);
                 }
             }
+        }
+        if (sToChange.size() == 0) {
+            cout << "В графе есть цикл. " << endl;
+            sortResults.clear();
+            break;
         }
     }
     return sortResults;
