@@ -50,7 +50,6 @@ void loadAll(unordered_map <int, Pipe>& truby, unordered_map <int, Stantia>& sta
         fin >> wpId;
         fin >> wsId;
         while (!fin.eof()) {
-           
             getline(fin, type);
             if (type == "Truba") {
                 Pipe p;
@@ -267,9 +266,19 @@ int main()
                     cout << endl << "Введите id станции-истока: ";
                     int fromId;
                     fromId = getInt();
+                    auto s1 = gts.stantii.find(fromId);
+                    if (s1 == gts.stantii.end()) {
+                        cout << "Такой станции нет." << endl;
+                        break;
+                    }
                     cout << endl << "Введите id станции-стока: ";
                     int toId;
                     toId = getInt();
+                    auto s2 = gts.stantii.find(toId);
+                    if (s2 == gts.stantii.end()) {
+                        cout << "Такой станции нет." << endl;
+                        break;
+                    }
                     if (gts.stantii[fromId].PipOut.size() < gts.stantii[fromId].ceh && gts.stantii[toId].PipIn.size() < gts.stantii[toId].ceh) {
                         gts.connectPipe(gts.stantii[fromId], gts.truby[id], gts.stantii[toId]);
                         GTS::pairCS pairi;

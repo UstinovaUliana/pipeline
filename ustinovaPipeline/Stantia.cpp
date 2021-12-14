@@ -69,13 +69,13 @@ std::ifstream& operator>> (std::ifstream& fin, Stantia& stan)
     fin >> stan.kolvPipIn;
     for (int i = 0; i < stan.kolvPipIn; i++) {
         int idIni;
-        cin >> idIni;
+        fin >> idIni;
         stan.PipIn.emplace(idIni);
     }
     fin >> stan.kolvPipOut;
     for (int i = 0; i < stan.kolvPipOut; i++) {
         int idOuti;
-        cin >> idOuti;
+        fin >> idOuti;
         stan.PipOut.emplace(idOuti);
     }
 
@@ -88,9 +88,11 @@ std::ofstream& operator<< (std::ofstream& out, Stantia& s) {
 
     out << "Stantia" << endl << s.id << endl << s.name << endl 
        << s.ceh << endl << s.cehRab << endl << s.eff << endl;
+    s.kolvPipIn = s.PipIn.size();
+    s.kolvPipOut = s.PipOut.size();
     out << s.kolvPipIn;
-    for (auto i : s.PipIn) out << i;
-    out << s.kolvPipOut;
-    for (auto i : s.PipOut) out << i;
+    for (auto i : s.PipIn) out << endl << i;
+    out << endl <<  s.kolvPipOut;
+    for (auto i : s.PipOut) out << endl << i;
     return out;
 }
