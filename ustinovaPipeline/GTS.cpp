@@ -15,14 +15,14 @@ void GTS::disconnectPipe(Stantia& sout, Pipe& p, Stantia& sin) {
 }
 map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
     map <int, Stantia> sortResults;
-    int sortNum=0;
+    int sortNum = 0;
     vector <int> sToChange;
 
     int counter = 0;
     int kolvoStan = stantii.size();
     while (sortResults.size() != kolvoStan) {
         sToChange.clear();
-        for (auto [id,s] : stantii) {
+        for (auto [id, s] : stantii) {
             if (s.PipIn.size() == 0) {
                 sToChange.push_back(id);
             }
@@ -49,7 +49,30 @@ map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
             break;
         }
 
-        
+        return sortResults;
     }
-    return sortResults;
 }
+//    int GTS::potok (unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
+//
+//        int stream;
+//        int pometka;
+//        map <int, Stantia> versh;
+//        /*for (auto [id, s] : stantii)
+//        {
+//            versh.emplace(0, s);
+//        }*/
+//        std::cout << "¬ведите id начальной вершины: \n";
+//        int startId = getInt();
+//        std::cout << "¬ведите id начальной вершины: \n";
+//        int endId = getInt();
+//        int rassm = startId;
+//        for (int i : ) {
+//            for (auto j : stantii[i].PipOut) {
+//                  for (auto& [id, s1] : stantii) {
+//                 ids=find(s1.PipIn =j);
+//          truby[j].perf= sqrt(power(truby[j].d,5)/truby[j].l);
+//                  versh[ids].first= min(versh[i].first,versh[--].first - truby[j].perf)
+  //              }
+//            }
+//        }
+//}

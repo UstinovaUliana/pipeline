@@ -18,5 +18,6 @@ public:
     void disconnectPipe(Stantia& sout, Pipe& p, Stantia& sin);
     vector <vector <int>> matrSmezh;
     map <int, Stantia> sort(unordered_map<int, Stantia> stantii);
+    int potok(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
 };
 

@@ -14,6 +14,7 @@ class Pipe
     int idOut;
     int idIn;
     int getId() { return id; };
+    int perf;
     friend std::ifstream& operator>> (std::ifstream& fin, Pipe& pipe);
     friend std::istream& operator>> (std::istream& out, Pipe& p);
     friend std::ostream& operator<< (std::ostream& out, const Pipe& pipe);

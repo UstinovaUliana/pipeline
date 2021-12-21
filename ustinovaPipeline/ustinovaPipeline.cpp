@@ -342,6 +342,9 @@ int main()
             }
             break;
         }
+       /* case 16: {
+
+        }*/
         default: {
             cout << "Нет такой команды.\n";
             break;
