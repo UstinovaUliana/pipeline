@@ -52,6 +52,26 @@ map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
         return sortResults;
     }
 }
+
+vector <vector<int>> GTS::makeMatrSmezh(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
+    vector <vector<int>> matrSmezh;
+    matrSmezh.resize(stantii.size()+1);
+    for (int i = 1; i < matrSmezh.size(); ++i)
+        matrSmezh[i].resize(stantii.size()+1);
+    map <int, Stantia> SwithNum;
+    map <int, int> numFromId;
+    int numOfS = 0;
+    for (auto [id, s] : stantii) {
+        numOfS++;
+        SwithNum.emplace(numOfS, s);
+        numFromId.emplace(id, numOfS);
+    }
+    for (auto [num, s] : SwithNum) {
+        for (int idp : s.PipOut)
+            matrSmezh[num][numFromId[truby[idp].idIn]] = idp;
+    }
+    return matrSmezh;
+}
 //    int GTS::potok (unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
 //
 //        int stream;
@@ -63,7 +83,7 @@ map <int, Stantia> GTS::sort(unordered_map<int, Stantia> stantii) {
 //        }*/
 //        std::cout << "¬ведите id начальной вершины: \n";
 //        int startId = getInt();
-//        std::cout << "¬ведите id начальной вершины: \n";
+//        std::cout << "¬ведите id конечной вершины: \n";
 //        int endId = getInt();
 //        int rassm = startId;
 //        for (int i : ) {
