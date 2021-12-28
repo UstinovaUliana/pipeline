@@ -342,9 +342,14 @@ int main()
             }
             break;
         }
-       /* case 16: {
-
-        }*/
+        case 16: {
+            cout << "Way from: ";
+            int from = getInt();
+            cout << "Way to: ";
+            int to = getInt();
+            gts.findMinWay(from, to, gts.stantii, gts.truby);
+            break;
+        }
         case 17: {
             vector <vector<int>> mS=gts.makeMatrSmezh(gts.stantii, gts.truby);
            /* for (int i = 1; i < mS.size(); i++) 

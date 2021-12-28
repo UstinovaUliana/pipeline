@@ -15,6 +15,7 @@ public:
     int eff;
     int kolvPipIn;
     int kolvPipOut;
+    int wayFromStart;  
     std::set <int> PipIn;
     std::set <int> PipOut;
     int getId() { return id; };

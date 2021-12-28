@@ -73,8 +73,8 @@ vector <vector<int>> GTS::makeMatrSmezh(unordered_map<int, Stantia> stantii, uno
     return matrSmezh;
 }
 
-int GTS::findMinWay(int stanIdFrom, int stanIdTo, vector <vector<int>> matrSmezh) {
-    vector <vector<int>> way;
+void GTS::findMinWay(int stanIdFrom, int stanIdTo, unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
+    /*vector <vector<int>> way;
     map <int, Stantia> SwithNum;
     map <int, int> numFromId;
     int numOfS = 0;
@@ -98,6 +98,42 @@ int GTS::findMinWay(int stanIdFrom, int stanIdTo, vector <vector<int>> matrSmezh
             }
             if (i == numFromId[stanIdTo]) break;
         }
+    }*/
+    set<int> setOfChangableNodes;
+
+    stantii[stanIdFrom].wayFromStart = 0;
+
+    for (auto& item : stantii) {
+        setOfChangableNodes.insert(item.first);
+    }
+
+    int workID = stanIdFrom;
+
+    while (setOfChangableNodes.size() != 0) {
+
+        // change verges
+        for (auto& item : truby) {
+            if (item.second.idOut == workID
+                && stantii[item.second.idOut].wayFromStart + item.second.l < stantii[item.second.idIn].wayFromStart) {
+
+                stantii[item.second.idIn].wayFromStart = stantii[item.second.idOut].wayFromStart + item.second.l;
+            }
+        }
+        setOfChangableNodes.erase(workID);
+
+        int min = INT_MAX;
+        // find next node
+        for (int i : setOfChangableNodes) {
+            if (stantii[i].wayFromStart < min) {
+                min = stantii[i].wayFromStart;
+                workID = i;
+            }
+        }
+    }
+
+    for (auto& item : stantii) {
+        std::cout << "ID: " << item.first << std::endl;
+        std::cout << "Weight: " << item.second.wayFromStart << std::endl;
     }
 }
 //    int GTS::potok (unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
