@@ -66,11 +66,39 @@ vector <vector<int>> GTS::makeMatrSmezh(unordered_map<int, Stantia> stantii, uno
         SwithNum.emplace(numOfS, s);
         numFromId.emplace(id, numOfS);
     }
-    for (auto [num, s] : SwithNum) {
+      for (auto [num, s] : SwithNum) {
         for (int idp : s.PipOut)
             matrSmezh[num][numFromId[truby[idp].idIn]] = idp;
     }
     return matrSmezh;
+}
+
+int GTS::findMinWay(int stanIdFrom, int stanIdTo, vector <vector<int>> matrSmezh) {
+    vector <vector<int>> way;
+    map <int, Stantia> SwithNum;
+    map <int, int> numFromId;
+    int numOfS = 0;
+    for (auto [id, s] : stantii) {
+        numOfS++;
+        SwithNum.emplace(numOfS, s);
+        numFromId.emplace(id, numOfS);
+    }
+    int counter=0;
+    for (int i = 1; i < matrSmezh[numFromId[stanIdFrom]].size(); i++) {
+        if (matrSmezh[numFromId[stanIdFrom]][i] != 0) {
+            way[counter++].push_back(i);
+            if (i == numFromId[stanIdTo]) break;
+        }
+    }
+    int counter = 0;
+    for (auto j : way) {
+        for (int i = 1; i < matrSmezh[numFromId[stanIdFrom]].size(); i++) {
+            if (matrSmezh[j[counter]][i] != 0) {
+                j.push_back(i);
+            }
+            if (i == numFromId[stanIdTo]) break;
+        }
+    }
 }
 //    int GTS::potok (unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby) {
 //

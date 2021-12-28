@@ -347,14 +347,14 @@ int main()
         }*/
         case 17: {
             vector <vector<int>> mS=gts.makeMatrSmezh(gts.stantii, gts.truby);
-            for (int i = 1; i < mS.size(); i++) 
+           /* for (int i = 1; i < mS.size(); i++) 
             { 
                 for (int j = 1; j < mS[i].size(); j++) {
                     cout << mS[i][j] << "   ";
                 }
                 cout << endl;
             }
-            break;
+            break;*/
         }
         default: {
             cout << "Нет такой команды.\n";

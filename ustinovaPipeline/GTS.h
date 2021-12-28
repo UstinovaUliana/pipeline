@@ -19,6 +19,7 @@ public:
     vector <vector <int>> matrSmezh;
     map <int, Stantia> sort(unordered_map<int, Stantia> stantii);
     vector <vector<int>> makeMatrSmezh(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
+    int findMinWay(int stanIdFrom, int stanIdTo, vector <vector<int>> matrSmezh);
     int potok(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
 };
 
