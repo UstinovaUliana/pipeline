@@ -343,23 +343,25 @@ int main()
             break;
         }
         case 16: {
-            cout << "Way from: ";
+            cout << "Id начальной станции: ";
             int from = getInt();
-            cout << "Way to: ";
-            int to = getInt();
-            gts.findMinWay(from, to, gts.stantii, gts.truby);
+            unordered_map<int, Node> nodesMap;
+            unordered_map<int, Verge> vergesMap;
+            nodesMap = gts.toNodesMap(gts.stantii);
+            vergesMap = gts.toVergesMap(gts.truby);
+            gts.findMinWay(nodesMap, vergesMap, from);
             break;
         }
         case 17: {
             vector <vector<int>> mS=gts.makeMatrSmezh(gts.stantii, gts.truby);
-           /* for (int i = 1; i < mS.size(); i++) 
+            for (int i = 1; i < mS.size(); i++) 
             { 
                 for (int j = 1; j < mS[i].size(); j++) {
                     cout << mS[i][j] << "   ";
                 }
                 cout << endl;
             }
-            break;*/
+            break;
         }
         default: {
             cout << "Ќет такой команды.\n";

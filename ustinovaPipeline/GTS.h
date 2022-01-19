@@ -4,6 +4,8 @@
 #include "Pipe.h"
 #include "Stantia.h"
 #include <string>
+#include "Node.h"
+#include "Verge.h"
 class GTS
 {
 public:
@@ -19,7 +21,10 @@ public:
     vector <vector <int>> matrSmezh;
     map <int, Stantia> sort(unordered_map<int, Stantia> stantii);
     vector <vector<int>> makeMatrSmezh(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
-    void findMinWay(int stanIdFrom, int stanIdTo, unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
+    unordered_map<int, Node> toNodesMap(const unordered_map<int, Stantia>& stationsMap);
+
+    unordered_map<int, Verge> toVergesMap(const unordered_map<int, Pipe>& pipesMap);
+    void findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge> vergeMap, int startID);
     int potok(unordered_map<int, Stantia> stantii, unordered_map<int, Pipe> truby);
 };
 
