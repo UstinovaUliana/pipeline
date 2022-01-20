@@ -94,17 +94,17 @@ unordered_map<int, Verge> GTS::toVergesMap(const unordered_map<int, Pipe>& pipes
 }
 void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge> vergeMap, int startID) {
     set<int> setOfChangableNodes;
-
+    map <int, vector<int>> ways;
     nodesMap[startID].weight = 0;
-
-    for (auto& item : nodesMap) {
-        setOfChangableNodes.insert(item.first);
-    }
+    int curid = startID;
+        for (auto& verge: vergeMap)
+            if (verge.second.startID == curid) {
+                setOfChangableNodes.insert(verge.second.endID);
+                ways.emplace(verge.second.endID, 0);
+            }
 
     int workID = startID;
-
     while (setOfChangableNodes.size() != 0) {
-
         // change verges
         for (auto& item : vergeMap) {
             if (item.second.startID == workID
@@ -112,6 +112,7 @@ void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge
                 && nodesMap[item.second.startID].weight + item.second.length < nodesMap[item.second.endID].weight) {
 
                 nodesMap[item.second.endID].weight = nodesMap[item.second.startID].weight + item.second.length;
+                ways[item.second.endID].push_back(item.second.startID);
             }
         }
         setOfChangableNodes.erase(workID);
@@ -122,13 +123,43 @@ void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge
             if (nodesMap[i].weight < min) {
                 min = nodesMap[i].weight;
                 workID = i;
+
             }
         }
     }
 
+    /*
+        for (auto& node : nodesMap) {
+        for (auto& verge : vergeMap ) {
+            if ((verge.second.endID == node.first )&& (node.second.weight == nodesMap[verge.second.startID].weight - verge.second.length)) {
+                ways[node.first].push_back(verge.second.startID);
+            }
+        }
+    }*/
+
+    /*for (auto& item : nodesMap) {
+        for (auto i : ways[item.first]) {
+            ways[item.first].push_back(item.first);
+        }
+    }
+    for (auto& item1 : nodesMap) {
+        for (auto i : ways[item1.first]) {
+            for (auto& item2 : nodesMap) {
+                for (auto j : ways[item2.first]) {
+                    if (ways[item1.first][1] == ways.first)
+                     for (auto k: ways[item2.first]) ways[item1.first].insert(ways[item1.first].begin(), k);
+                }
+            }
+        }
+    }*/
     for (auto& item : nodesMap) {
         std::cout << "Id станции: " << item.first << std::endl;
-        std::cout << "Длина пути: " << item.second.weight << std::endl;
+        if (item.second.weight>=200000)   std::cout << "Нет пути." <<endl;
+        else std::cout << "Длина пути: " << item.second.weight << std::endl;
+        for (auto i: ways[item.first]) {
+            std::cout << i << "-->";
+        }
+        std::cout << endl;
     }
 }
     //    vector<int> parent(5, -1);
