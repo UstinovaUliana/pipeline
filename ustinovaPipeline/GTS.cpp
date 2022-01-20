@@ -98,7 +98,7 @@ void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge
     nodesMap[startID].weight = 0;
     int curid = startID;
         for (auto& verge: vergeMap)
-            if (verge.second.startID == curid) {
+            if (verge.second.startID == curid && verge.second.isWorking) {
                 setOfChangableNodes.insert(verge.second.endID);
                 ways.emplace(verge.second.endID, 0);
             }
@@ -120,6 +120,8 @@ void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge
         int min = INT_MAX;
         // find next node
         for (int i : setOfChangableNodes) {
+
+            if (setOfChangableNodes.size() == 1) workID = i;
             if (nodesMap[i].weight < min) {
                 min = nodesMap[i].weight;
                 workID = i;
@@ -137,28 +139,30 @@ void GTS::findMinWay(unordered_map<int, Node> nodesMap, unordered_map<int, Verge
         }
     }*/
 
+    
+    for (auto& item1 : nodesMap) {
+        for (auto i : ways[item1.first]) {
+            for (auto& item2 : nodesMap) {
+                for (auto j: ways) {
+                    if (ways[item1.first][1] == j.first)
+                     for (auto k: ways[item2.first]) ways[item1.first].push_back(k);
+                }
+            }
+        }
+    }
     /*for (auto& item : nodesMap) {
         for (auto i : ways[item.first]) {
             ways[item.first].push_back(item.first);
         }
-    }
-    for (auto& item1 : nodesMap) {
-        for (auto i : ways[item1.first]) {
-            for (auto& item2 : nodesMap) {
-                for (auto j : ways[item2.first]) {
-                    if (ways[item1.first][1] == ways.first)
-                     for (auto k: ways[item2.first]) ways[item1.first].insert(ways[item1.first].begin(), k);
-                }
-            }
-        }
     }*/
     for (auto& item : nodesMap) {
         std::cout << "Id станции: " << item.first << std::endl;
-        if (item.second.weight>=200000)   std::cout << "Нет пути." <<endl;
+        if (item.second.weight>=200000 or item.second.weight <0)   std::cout << "Нет пути." <<endl;
         else std::cout << "Длина пути: " << item.second.weight << std::endl;
         for (auto i: ways[item.first]) {
             std::cout << i << "-->";
         }
+        std::cout<< item.first;
         std::cout << endl;
     }
 }
